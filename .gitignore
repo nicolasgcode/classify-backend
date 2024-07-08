@@ -4,9 +4,6 @@ coverage
 # API keys and secrets
 .env
 
-# dependency directory
-node_modules
-
 # OS metadata
 .DS_Store
 Thumbs.db
