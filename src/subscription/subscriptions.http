@@ -1,0 +1,39 @@
+### get all users
+GET http://localhost:3000/api/subscriptions
+
+
+### get user by id
+GET http://localhost:3000/api/subscriptions/23
+
+### create new user
+POST http://localhost:3000/api/subscriptions
+Content-Type: application/json 
+
+{
+  "id": "2",
+  "dateStart": "2024-06-17T00:00:00Z",
+  //"priceId": "100",
+  "price": "3"
+}
+  
+### Edit/modify user (PUT - recurso completo/objeto con estado final)
+PUT http://localhost:3000/api/subscriptions/1
+Content-Type: application/json
+
+{
+  "id": "23",
+  "dateStart": "2024-06-17",
+  "price": "3"
+}
+
+### Edit/modify user (PATCH - Modificaciones parciales/modificaciones incrementales)
+PATCH http://localhost:3000/api/subscriptions/2
+Content-Type: application/json
+
+{
+  "dateStart": "2024-05-17"
+ // "price": "3"
+}
+
+### delete user
+DELETE http://localhost:3000/api/subscriptions/2
