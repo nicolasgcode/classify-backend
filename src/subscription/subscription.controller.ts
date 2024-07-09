@@ -7,11 +7,13 @@ function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFuncti
   const { id, dateStart, price } = req.body;
 
   // Validación básica
+  /*
   if (!id || !dateStart || !price) {
     return res.status(400).send({ message: 'Invalid input data' });
   }
-
+*/
   // Manejo de posibles errores en findOnePriceSubscription
+ 
   try {
     if (req.body.price !== undefined) {
       req.body.price = parseFloat(req.body.price);
@@ -29,7 +31,7 @@ function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFuncti
 
   req.body.sanitizedInput = {
     id: req.body.id,
-    dateStart: new Date(dateStart),
+    dateStart: req.body.dateStart,
     price: req.body.price,
   };
 
@@ -39,7 +41,6 @@ function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFuncti
       delete req.body.sanitizedInput[key];
     }
   });
-
   next();
 }
 function findAll(req: Request, res: Response) {
