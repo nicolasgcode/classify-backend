@@ -1,0 +1,35 @@
+### get all topics
+GET http://localhost:3000/api/topics
+
+
+### get topic by id
+GET http://localhost:3000/api/topics/1
+
+### create new topic
+POST http://localhost:3000/api/topics
+Content-Type: application/json 
+
+{
+  "id": "2",
+  "description": "Topic 2"
+}
+  
+### Edit/modify topic (PUT - recurso completo/objeto con estado final)
+PUT http://localhost:3000/api/topics/1
+Content-Type: application/json
+
+{
+  "id": "1",
+  "description": "Topic 3"
+}
+
+### Edit/modify topic (PATCH - Modificaciones parciales/modificaciones incrementales)
+PATCH http://localhost:3000/api/topics/1
+Content-Type: application/json
+
+{
+  "description": "Topic 4"
+}
+
+### delete topic
+DELETE http://localhost:3000/api/topics/1
