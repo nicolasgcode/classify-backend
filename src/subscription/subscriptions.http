@@ -22,6 +22,7 @@ Content-Type: application/json
 {
   "id": "23",
   "dateStart": "2024-06-17",
+  "duration": "60",
   "price": "3"
 }
 
