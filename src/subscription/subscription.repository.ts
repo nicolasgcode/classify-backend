@@ -3,7 +3,7 @@ import { Subscription } from './subscription.entity.js';
 
 
 const date = new Date(2024, 5, 17);
-const subscriptions = [new Subscription('1', date, 1000)];
+const subscriptions = [new Subscription('1', date, 30, 1000)];
 
 export class SubscriptionRepository implements Repository<Subscription> {
   public findAll(): Subscription[] | undefined {
