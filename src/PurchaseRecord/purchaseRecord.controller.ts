@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { Topic } from './topic.entity.js';
+import { PurchaseRecord } from './purchaseRecord.entity.js';
 import {orm} from '../shared/orm.js';
 
 const em = orm.em;
-em.getRepository(Topic);
+em.getRepository(PurchaseRecord);
 
-
-function sanitizeTopicInput(req: Request, res: Response, next: NextFunction) {
+/*
+function sanitizePurchaseRecordInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     id: req.body.id,
     description: req.body.description,
@@ -19,24 +19,26 @@ function sanitizeTopicInput(req: Request, res: Response, next: NextFunction) {
   }); // Remove undefined
   next();
 }
-
+  */
 async function findAll(req: Request, res: Response) {
   try {
-    const topics = await em.find(Topic, {});
-    res.json({message: 'Finded all topics', data: topics });
+    const purchaseRecords = await em.find(PurchaseRecord, {});
+    res.json({message: 'Finded all purchaseRecords', data: purchaseRecords });
   }catch (error:any) {
-    res.status(500).json({ message: 'Error finding topics' });
+    res.status(500).json({ message: 'Error finding purchaseRecords' });
   }
-
+  //res.status(500).json({ message: 'Not implemented' });
+  //res.json({ data: repository.findAll() });
 }
+
 
 async function findOne(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
-    const topic = await em.findOneOrFail(Topic, { id })
+    const purchaseRecord = await em.findOneOrFail(PurchaseRecord, { id })
     res
       .status(200)
-      .json({ message: 'Finded topic', data: topic })
+      .json({ message: 'Finded purchaseRecord', data: purchaseRecord })
   }catch (error:any) {  
     res.status(500).send({ message: error.message })
   }
@@ -44,9 +46,9 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try{
-    const topic	 = em.create(Topic, req.body)
+    const purchaseRecord	 = em.create(PurchaseRecord, req.body)
     await em.flush()
-    res.status(201).json({ message: 'Topic created', data: topic }
+    res.status(201).json({ message: 'PurchaseRecord created', data: purchaseRecord }
     )}catch (error:any) {
       res.status(500).send({ message: error.message })
   }
@@ -55,10 +57,10 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
-    const topic = em.getReference(Topic, id);
-    em.assign(topic, req.body);
+    const purchaseRecord = em.getReference(PurchaseRecord, id);
+    em.assign(purchaseRecord, req.body);
     await em.flush();
-    res.status(200).json({ message: 'Topic updated', data: topic });
+    res.status(200).json({ message: 'PurchaseRecord updated', data: purchaseRecord });
   }catch (error:any) {
     res.status(500).send({ message: error.message })
   }
@@ -67,12 +69,13 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
-    const topic = em.getReference(Topic, id);
-    em.removeAndFlush(topic)
-    res.status(204).json({ message: 'Topic deleted' });
+    const purchaseRecord = em.getReference(PurchaseRecord, id);
+    em.removeAndFlush(purchaseRecord)
+    res.status(204).json({ message: 'PurchaseRecord deleted' });
   }catch (error:any) {
     res.status(500).send({ message: error.message })
   }
+  //res.status(500).json({ message: 'Not implemented' });
 }
 
-export { sanitizeTopicInput, findAll, findOne, add, update, remove };
+export {findAll, findOne, add, update, remove };

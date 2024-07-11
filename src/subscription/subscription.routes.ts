@@ -12,7 +12,6 @@ export const subscriptionRouter = Router();
 
 subscriptionRouter.get('/', findAll);
 subscriptionRouter.get('/:id', findOne);
-subscriptionRouter.post('/', sanitizeSubscriptionInput, add);
-subscriptionRouter.put('/:id', sanitizeSubscriptionInput, update);
-subscriptionRouter.patch('/:id', sanitizeSubscriptionInput, update);
+subscriptionRouter.post('/', add);
+subscriptionRouter.put('/:id', update);
 subscriptionRouter.delete('/:id', remove);

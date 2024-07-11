@@ -24,3 +24,6 @@ dist/**/*
 
 ## built vscode extensions
 *.vsix
+
+## dependencies
+node_modules
