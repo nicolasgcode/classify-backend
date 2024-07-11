@@ -4,6 +4,9 @@ coverage
 # API keys and secrets
 .env
 
+# dependency directory
+# node_modules
+
 # OS metadata
 .DS_Store
 Thumbs.db
@@ -25,5 +28,4 @@ dist/**/*
 ## built vscode extensions
 *.vsix
 
-## dependencies
-node_modules
+
