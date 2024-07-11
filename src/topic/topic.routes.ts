@@ -12,7 +12,6 @@ export const topicRouter = Router();
 
 topicRouter.get('/', findAll);
 topicRouter.get('/:id', findOne);
-topicRouter.post('/', sanitizeTopicInput, add);
-topicRouter.put('/:id', sanitizeTopicInput, update);
-topicRouter.patch('/:id', sanitizeTopicInput, update);
+topicRouter.post('/', add);
+topicRouter.put('/:id', update);
 topicRouter.delete('/:id', remove);

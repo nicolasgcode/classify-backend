@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { SubscriptionRepository } from './subscription.repository.js';
 import { Subscription } from './subscription.entity.js';
+import {orm} from '../shared/orm.js';
 
-const repository = new SubscriptionRepository();
+const em = orm.em;
+em.getRepository(Subscription);
+
 function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFunction) {
   const { id, dateStart, duration, price } = req.body;
   // Validación de tipos
@@ -44,51 +46,58 @@ function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFuncti
   next();
 }
 
-function findAll(req: Request, res: Response) {
-  res.json({ data: repository.findAll() });
-}
-
-function findOne(req: Request, res: Response) {
-  const id = req.params.id;
-  const subscription = repository.findOne({ id });
-  if (!subscription) {
-    return res.status(404).send({ message: 'Subscription not found' });
+async function findAll(req: Request, res: Response) {
+  try {
+    const subscriptions = await em.find(Subscription, {});
+    res.json({message: 'Finded all subscriptions', data: subscriptions });
+  }catch (error:any) {
+    res.status(500).json({ message: 'Error finding subscriptions' });
   }
-  res.json({ data: subscription });
 }
 
-function add(req: Request, res: Response) {
-  const input = req.body.sanitizedInput;
-  const subscriptionInput = new Subscription(
-    input.id,
-    input.dateStart,
-    input.duration,
-    input.price,
-  );
-  const subscription = repository.add(subscriptionInput);
-  return res.status(201).send({ message: 'Subscription created', data: subscription });
-}
-
-function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id;
-  const subscription = repository.update(req.body.sanitizedInput);
-
-  if (!subscription) {
-    return res.status(404).send({ message: 'Subscription not found' });
+async function findOne(req: Request, res: Response) {
+  try{
+    const id = Number.parseInt(req.params.id)
+    const subscription = await em.findOneOrFail(Subscription, { id })
+    res
+      .status(200)
+      .json({ message: 'Finded subscription', data: subscription })
+  }catch (error:any) {  
+    res.status(500).send({ message: error.message })
   }
-
-  res.status(200).send({ message: 'Subscription edited successfully!', data: subscription });
 }
 
-
-function remove(req: Request, res: Response) {
-  const id = req.params.id;
-  const subscription = repository.delete({ id });
-
-  if (!subscription) {
-    return res.status(404).send({ message: 'Subscription not found' });
+async function add(req: Request, res: Response) {
+  try{
+    const subscription	 = em.create(Subscription, req.body)
+    await em.flush()
+    res.status(201).json({ message: 'Subscription created', data: subscription }
+    )}catch (error:any) {
+      res.status(500).send({ message: error.message })
   }
-  return res.status(200).send({ message: 'Subscription deleted successfully' });
+}
+
+async function update(req: Request, res: Response) {
+  try{
+    const id = Number.parseInt(req.params.id)
+    const subscription = em.getReference(Subscription, id);
+    em.assign(subscription, req.body);
+    await em.flush();
+    res.status(200).json({ message: 'Subscription updated', data: subscription });
+  }catch (error:any) {
+    res.status(500).send({ message: error.message })
+  }
+}
+
+async function remove(req: Request, res: Response) {
+  try{
+    const id = Number.parseInt(req.params.id)
+    const subscription = em.getReference(Subscription, id);
+    em.removeAndFlush(subscription)
+    res.status(204).json({ message: 'Subscription deleted' });
+  }catch (error:any) {
+    res.status(500).send({ message: error.message })
+  }
 }
 
 export { sanitizeSubscriptionInput, findAll, findOne, add, update, remove };
