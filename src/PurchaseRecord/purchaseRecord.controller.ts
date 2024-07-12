@@ -5,21 +5,6 @@ import {orm} from '../shared/orm.js';
 const em = orm.em;
 em.getRepository(PurchaseRecord);
 
-/*
-function sanitizePurchaseRecordInput(req: Request, res: Response, next: NextFunction) {
-  req.body.sanitizedInput = {
-    id: req.body.id,
-    description: req.body.description,
-  }; // Middleware
-  //more checks here (content, type)
-
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined)
-      delete req.body.sanitizedInput[key];
-  }); // Remove undefined
-  next();
-}
-  */
 async function findAll(req: Request, res: Response) {
   try {
     const purchaseRecords = await em.find(PurchaseRecord, {});

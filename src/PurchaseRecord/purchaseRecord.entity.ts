@@ -6,7 +6,7 @@ import { Subscription } from '../subscription/subscription.entity.js';
 export class PurchaseRecord extends BaseEntity {
 
     @Property({unique: true})
-    MontoTotal!: number
+    montoTotal!: number
 
     @Property({type: DateTimeType})
     purchaseAt = new Date()
@@ -20,8 +20,7 @@ export class PurchaseRecord extends BaseEntity {
     */
    
     @ManyToMany(() => Subscription, (subscription) => subscription.purchaseRecords, {
-        cascade: [Cascade.ALL],
-        owner: true,
+       nullable: true, 
     })
     subscriptions!: Subscription[]
     /*

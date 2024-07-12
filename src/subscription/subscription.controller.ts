@@ -4,17 +4,9 @@ import {orm} from '../shared/orm.js';
 
 const em = orm.em;
 em.getRepository(Subscription);
-
 function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFunction) {
-  const { id, dateStart, duration, price } = req.body;
+  const { id, duration, price } = req.body;
   // Validación de tipos
-  try {
-    if (req.body.dateStart !== undefined) {
-      req.body.dateStart = new Date(req.body.dateStart);
-    }
-  } catch (error) { 
-    return res.status(400).send({ message: 'Invalid dateStart' });
-  }
   try {
     if (req.body.duration !== undefined) {
       req.body.duration = parseInt(req.body.duration);
@@ -24,7 +16,7 @@ function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFuncti
   }
   try {
     if (req.body.price !== undefined) {
-      req.body.price = parseFloat(req.body.price);
+      req.body.price = parseInt(req.body.price);
     }
   } catch (error) {
       return res.status(400).send({ message: 'Invalid price' });
@@ -72,7 +64,7 @@ async function add(req: Request, res: Response) {
     const subscription	 = em.create(Subscription, req.body)
     await em.flush()
     res.status(201).json({ message: 'Subscription created', data: subscription }
-    )}catch (error:any) {
+    )}catch (error:any){
       res.status(500).send({ message: error.message })
   }
 }
@@ -100,4 +92,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeSubscriptionInput, findAll, findOne, add, update, remove };
+export {  findAll, findOne, add, update, remove };

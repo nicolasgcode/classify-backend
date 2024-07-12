@@ -6,6 +6,7 @@ import { subscriptionRouter } from './subscription/subscription.routes.js';
 import { topicRouter } from './topic/topic.routes.js';
 import {orm, syncSchema} from './shared/orm.js';
 import { RequestContext } from '@mikro-orm/core';
+import { purchaseRecordRouter } from './purchaseRecord/purchaseRecord.routes.js';
 
 dotenv.config();
 
@@ -27,6 +28,8 @@ app.use(express.json());
 app.use('/api/subscriptions', subscriptionRouter)
 
 app.use('/api/topics', topicRouter);
+
+app.use('/api/subscriptions/purchaseRecords', purchaseRecordRouter);
 
 app.use((_, res) => {
   res.status(404).send({ message: 'Resource not found' });

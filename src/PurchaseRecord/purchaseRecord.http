@@ -1,36 +1,57 @@
-### get all topics
-GET http://localhost:3000/api/topics
+### get all purchaseRecords
+GET http://localhost:3000/api/subscriptions/purchaseRecords
 
+### create new purchaseRecord
+# @name createPurchaseRecord
+POST http://localhost:3000/api/subscriptions/purchaseRecords
+Content-Type: application/json 
 
-### get topic by id
-GET http://localhost:3000/api/topics/1
+{
+  "montoTotal": 1000,
+  "subscriptions": [23]
+}
+###ID
+@id = {{createPurchaseRecord.response.body.data.id}} 
+### get purchaseRecord by id
+GET http://localhost:3000/api/subscriptions/purchaseRecords/{{id}}
 
-### create new topic
-# @name createTopic
-POST http://localhost:3000/api/topics
+### Edit/modify purchaseRecord (PUT - recurso completo/objeto con estado final)
+PUT http://localhost:3000/api/subscriptions/purchaseRecords/{{id}}
+Content-Type: application/json
+
+{
+  "montoTotal": 1500
+}
+
+### Post a purchaseRecord
+# @name createPurchaseRecordToDelete
+POST http://localhost:3000/api/subscriptions/purchaseRecords
 Content-Type: application/json 
 
 {
   "id": "2",
-  "description": "Topic 2"
+  "montoTotal": 2000,
+  "subscriptions": [23]
 }
-  
-### Edit/modify topic (PUT - recurso completo/objeto con estado final)
-PUT http://localhost:3000/api/topics/1
+
+@idToDelete = {{createPurchaseRecordToDelete.response.body.data.id}}
+### delete purchaseRecord
+DELETE http://localhost:3000/api/subscriptions/purchaseRecords/{{idToDelete}}
+
+
+
+
+
+
+
+
+### Edit/modify purchaseRecord (PATCH - Modificaciones parciales/modificaciones incrementales)
+PATCH http://localhost:3000/api/subscriptions/purchaseRecords/1
 Content-Type: application/json
 
 {
-  "id": "1",
-  "description": "Topic 3"
+  "description": "PurchaseRecord 4"
 }
 
-### Edit/modify topic (PATCH - Modificaciones parciales/modificaciones incrementales)
-PATCH http://localhost:3000/api/topics/1
-Content-Type: application/json
-
-{
-  "description": "Topic 4"
-}
-
-### delete topic
-DELETE http://localhost:3000/api/topics/1
+### delete purchaseRecord
+DELETE http://localhost:3000/api/subscriptions/purchaseRecords/1

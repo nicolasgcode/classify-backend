@@ -44,7 +44,7 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try{
-    const topic	 = em.create(Topic, req.body)
+    const topic	 = em.create(Topic, req.body.sanitizedInput)
     await em.flush()
     res.status(201).json({ message: 'Topic created', data: topic }
     )}catch (error:any) {
