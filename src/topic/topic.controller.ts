@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { TopicRepository } from './topic.repository.js';
 import { Topic } from './topic.entity.js';
+import {orm} from '../shared/orm.js';
 
-const repository = new TopicRepository();
+const em = orm.em;
+em.getRepository(Topic);
+
 
 function sanitizeTopicInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
@@ -17,50 +19,60 @@ function sanitizeTopicInput(req: Request, res: Response, next: NextFunction) {
   }); // Remove undefined
   next();
 }
-function findAll(req: Request, res: Response) {
-  res.json({ data: repository.findAll() });
-}
 
-function findOne(req: Request, res: Response) {
-  const id = req.params.id;
-  const topic = repository.findOne({ id });
-  if (!topic) {
-    return res.status(404).send({ message: 'Topic not found' });
-  }
-  res.json({ data: topic });
-}
-
-function add(req: Request, res: Response) {
-  const input = req.body.sanitizedInput;
-
-  const topicInput = new Topic(
-    input.id,
-    input.description,
-  );
-
-  const topic = repository.add(topicInput);
-  return res.status(201).send({ message: 'Topic created', data: topic });
-}
-
-function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id;
-  const topic = repository.update(req.body.sanitizedInput);
-
-  if (!topic) {
-    return res.status(404).send({ message: 'Topic not found' });
+async function findAll(req: Request, res: Response) {
+  try {
+    const topics = await em.find(Topic, {});
+    res.json({message: 'Finded all topics', data: topics });
+  }catch (error:any) {
+    res.status(500).json({ message: 'Error finding topics' });
   }
 
-  res.status(200).send({ message: 'Topic edited successfully!', data: topic });
 }
 
-function remove(req: Request, res: Response) {
-  const id = req.params.id;
-  const topic = repository.delete({ id });
-
-  if (!topic) {
-    return res.status(404).send({ message: 'Topic not found' });
+async function findOne(req: Request, res: Response) {
+  try{
+    const id = Number.parseInt(req.params.id)
+    const topic = await em.findOneOrFail(Topic, { id })
+    res
+      .status(200)
+      .json({ message: 'Finded topic', data: topic })
+  }catch (error:any) {  
+    res.status(500).send({ message: error.message })
   }
-  return res.status(200).send({ message: 'Topic deleted successfully' });
+}
+
+async function add(req: Request, res: Response) {
+  try{
+    const topic	 = em.create(Topic, req.body.sanitizedInput)
+    await em.flush()
+    res.status(201).json({ message: 'Topic created', data: topic }
+    )}catch (error:any) {
+      res.status(500).send({ message: error.message })
+  }
+}
+
+async function update(req: Request, res: Response) {
+  try{
+    const id = Number.parseInt(req.params.id)
+    const topic = em.getReference(Topic, id);
+    em.assign(topic, req.body);
+    await em.flush();
+    res.status(200).json({ message: 'Topic updated', data: topic });
+  }catch (error:any) {
+    res.status(500).send({ message: error.message })
+  }
+}
+
+async function remove(req: Request, res: Response) {
+  try{
+    const id = Number.parseInt(req.params.id)
+    const topic = em.getReference(Topic, id);
+    em.removeAndFlush(topic)
+    res.status(204).json({ message: 'Topic deleted' });
+  }catch (error:any) {
+    res.status(500).send({ message: error.message })
+  }
 }
 
 export { sanitizeTopicInput, findAll, findOne, add, update, remove };

@@ -1,33 +1,56 @@
-### get all users
+### get all subscriptions
 GET http://localhost:3000/api/subscriptions
+### create new subscription
 
-
-### get user by id
-GET http://localhost:3000/api/subscriptions/1
-
-### create new user
+# @name createSubscription
 POST http://localhost:3000/api/subscriptions
 Content-Type: application/json 
 
 {
-  "id": "3",
-  "dateStart": "2024-08-17T00:00:00Z",
-  "price": "3"
+  "id": "1",
+  "description": "1 mes",
+  "duration": "30",
+  "price": "300",
+  "purchaseRecords": []
 }
-  
-### Edit/modify user (PUT - recurso completo/objeto con estado final)
+
+### ID
+@id = {{createSubscription.response.body.data.id}}
+
+### get subscription by id
+GET http://localhost:3000/api/subscriptions/1
+
+### Edit/modify subscription (PUT - recurso completo/objeto con estado final)
 PUT http://localhost:3000/api/subscriptions/1
 Content-Type: application/json
 
 {
-  "id": "23",
-  "dateStart": "2024-06-17",
+  "id": "1",
+  "description": "2 meses",
   "duration": "60",
   "price": "3"
 }
 
-### Edit/modify user (PATCH - Modificaciones parciales/modificaciones incrementales)
-PATCH http://localhost:3000/api/subscriptions/1
+### POST a subscription
+# @name createSubscriptionToDelete
+POST http://localhost:3000/api/subscriptions
+Content-Type: application/json 
+
+{
+  "description": "3 meses",
+  "duration": "90",
+  "price": "800",
+  "purchaseRecords": []
+}
+
+###
+@idToDelete = {{createSubscriptionToDelete.response.body.data.id}}
+### delete subscription
+DELETE http://localhost:3000/api/subscriptions/{{idToDelete}}
+
+
+### Edit/modify subscription (PATCH - Modificaciones parciales/modificaciones incrementales)
+PATCH http://localhost:3000/api/subscriptions/{{idToDelete}}
 Content-Type: application/json
 
 {
@@ -35,5 +58,3 @@ Content-Type: application/json
   "price": "8"
 }
 
-### delete user
-DELETE http://localhost:3000/api/subscriptions/1

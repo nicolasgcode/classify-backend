@@ -1,0 +1,56 @@
+### get all purchaseRecords
+GET http://localhost:3000/api/subscriptions/purchaseRecords
+
+### create new purchaseRecord
+# @name createPurchaseRecord
+POST http://localhost:3000/api/subscriptions/purchaseRecords
+Content-Type: application/json 
+
+{
+  "montoTotal": 1000,
+  "subscriptions": [23]
+}
+###ID
+@id = {{createPurchaseRecord.response.body.data.id}} 
+### get purchaseRecord by id
+GET http://localhost:3000/api/subscriptions/purchaseRecords/{{id}}
+
+### Edit/modify purchaseRecord (PUT - recurso completo/objeto con estado final)
+PUT http://localhost:3000/api/subscriptions/purchaseRecords/{{id}}
+Content-Type: application/json
+
+{
+  "montoTotal": 4500
+}
+
+### Post a purchaseRecord
+# @name createPurchaseRecordToDelete
+POST http://localhost:3000/api/subscriptions/purchaseRecords
+Content-Type: application/json 
+
+{
+  "montoTotal": 2000,
+  "subscriptions": []
+}
+
+@idToDelete = {{createPurchaseRecordToDelete.response.body.data.id}}
+### delete purchaseRecord
+DELETE http://localhost:3000/api/subscriptions/purchaseRecords/{{idToDelete}}
+
+
+
+
+
+
+
+
+### Edit/modify purchaseRecord (PATCH - Modificaciones parciales/modificaciones incrementales)
+PATCH http://localhost:3000/api/subscriptions/purchaseRecords/1
+Content-Type: application/json
+
+{
+  "description": "PurchaseRecord 4"
+}
+
+### delete purchaseRecord
+DELETE http://localhost:3000/api/subscriptions/purchaseRecords/1
