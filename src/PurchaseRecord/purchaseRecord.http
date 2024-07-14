@@ -20,7 +20,7 @@ PUT http://localhost:3000/api/subscriptions/purchaseRecords/{{id}}
 Content-Type: application/json
 
 {
-  "montoTotal": 1500
+  "montoTotal": 4500
 }
 
 ### Post a purchaseRecord
@@ -29,9 +29,8 @@ POST http://localhost:3000/api/subscriptions/purchaseRecords
 Content-Type: application/json 
 
 {
-  "id": "2",
   "montoTotal": 2000,
-  "subscriptions": [23]
+  "subscriptions": []
 }
 
 @idToDelete = {{createPurchaseRecordToDelete.response.body.data.id}}

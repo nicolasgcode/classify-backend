@@ -55,7 +55,7 @@ async function remove(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
     const purchaseRecord = em.getReference(PurchaseRecord, id);
-    em.removeAndFlush(purchaseRecord)
+    await em.removeAndFlush(purchaseRecord)
     res.status(204).json({ message: 'PurchaseRecord deleted' });
   }catch (error:any) {
     res.status(500).send({ message: error.message })

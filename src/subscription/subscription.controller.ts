@@ -43,7 +43,7 @@ async function findAll(req: Request, res: Response) {
     const subscriptions = await em.find(Subscription, {});
     res.json({message: 'Finded all subscriptions', data: subscriptions });
   }catch (error:any) {
-    res.status(500).json({ message: 'Error finding subscriptions' });
+    res.status(500).json({ message: error.message });
   }
 }
 
@@ -51,11 +51,9 @@ async function findOne(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
     const subscription = await em.findOneOrFail(Subscription, { id })
-    res
-      .status(200)
-      .json({ message: 'Finded subscription', data: subscription })
+    res.status(200).json({ message: 'Finded subscription', data: subscription })
   }catch (error:any) {  
-    res.status(500).send({ message: error.message })
+    res.status(500).json({ message: error.message })
   }
 }
 
@@ -65,7 +63,7 @@ async function add(req: Request, res: Response) {
     await em.flush()
     res.status(201).json({ message: 'Subscription created', data: subscription }
     )}catch (error:any){
-      res.status(500).send({ message: error.message })
+      res.status(500).json({ message: error.message })
   }
 }
 
@@ -77,7 +75,7 @@ async function update(req: Request, res: Response) {
     await em.flush();
     res.status(200).json({ message: 'Subscription updated', data: subscription });
   }catch (error:any) {
-    res.status(500).send({ message: error.message })
+    res.status(500).json({ message: error.message })
   }
 }
 
@@ -85,10 +83,10 @@ async function remove(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
     const subscription = em.getReference(Subscription, id);
-    em.removeAndFlush(subscription)
+    await em.removeAndFlush(subscription)
     res.status(204).json({ message: 'Subscription deleted' });
   }catch (error:any) {
-    res.status(500).send({ message: error.message })
+    res.status(500).json({ message: error.message })
   }
 }
 
