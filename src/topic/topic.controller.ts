@@ -5,10 +5,9 @@ import {orm} from '../shared/orm.js';
 const em = orm.em;
 em.getRepository(Topic);
 
-
 function sanitizeTopicInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    id: req.body.id,
+    //id: req.body.id,
     description: req.body.description,
   }; // Middleware
   //more checks here (content, type)
@@ -44,7 +43,7 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try{
-    const topic	 = em.create(Topic, req.body.sanitizedInput)
+    const topic	 = em.create(Topic, req.body)
     await em.flush()
     res.status(201).json({ message: 'Topic created', data: topic }
     )}catch (error:any) {

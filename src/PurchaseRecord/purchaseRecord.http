@@ -8,7 +8,7 @@ Content-Type: application/json
 
 {
   "montoTotal": 1000,
-  "subscriptions": [23]
+  "subscriptions": [27]
 }
 ###ID
 @id = {{createPurchaseRecord.response.body.data.id}} 
@@ -20,7 +20,8 @@ PUT http://localhost:3000/api/subscriptions/purchaseRecords/{{id}}
 Content-Type: application/json
 
 {
-  "montoTotal": 4500
+  "montoTotal": 4500,
+  "subscriptions": [28]
 }
 
 ### Post a purchaseRecord
@@ -30,7 +31,7 @@ Content-Type: application/json
 
 {
   "montoTotal": 2000,
-  "subscriptions": []
+  "subscriptions": [27]
 }
 
 @idToDelete = {{createPurchaseRecordToDelete.response.body.data.id}}
