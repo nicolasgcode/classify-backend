@@ -14,7 +14,7 @@ export class Subscription extends BaseEntity {
 
     @ManyToMany(() => PurchaseRecord, purchaseRecord => purchaseRecord.subscriptions, {
         cascade: [Cascade.ALL],
-        owner: true,
+        //owner: true,
         nullable: true
       })
       purchaseRecords = new Collection<PurchaseRecord>(this);

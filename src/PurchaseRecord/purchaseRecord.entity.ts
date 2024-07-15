@@ -11,16 +11,17 @@ export class PurchaseRecord extends BaseEntity {
     @Property({type: DateTimeType})
     purchaseAt = new Date()
 
-    /*
+    /* 
     @Property({
         type: DateTimeType,
-        onUpdate: () => new Date()
+        onUpdate: () => new Date() 
     })
     updatedAt = new Date()
-    */
+     */
    
     @ManyToMany(() => Subscription, (subscription) => subscription.purchaseRecords, {
        nullable: true, 
+       owner: true,
     })
     subscriptions!: Subscription[]
     /*
