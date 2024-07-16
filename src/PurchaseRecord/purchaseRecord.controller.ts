@@ -6,6 +6,7 @@ import { User } from '../user/user.entity.js';
 
 
 const em = orm.em;
+
 em.getRepository(PurchaseRecord);
 function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFunction) {
   const { id, montoTotal, purchaseAt } = req.body;
@@ -26,15 +27,15 @@ function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFuncti
   } catch (error) {
       return res.status(400).send({ message: 'Invalid purchaseAt' });
   }
-  try{  
-    if (req.body.subscriptions[0] !== undefined) {
-      req.body.subscriptions[0] = req.body.subscriptions[0].map((subscription:any) => {
-        return em.getReference(Subscription, subscription.id);
-      });
+  /* try{  
+    for (let i of req.body.subscriptions) {
+      if (i !== undefined) {
+        i = parseInt(i);
+      }
     }
   }catch (error) {
     return res.status(400).send({ message: 'Invalid subscriptions' });
-  }
+  } */
       
   // Creación de objeto con propiedades válidas
   req.body.sanitizedInput = {
@@ -60,8 +61,6 @@ async function findAll(req: Request, res: Response) {
   }catch (error:any) {
     res.status(500).json({ message: 'Error finding purchaseRecords' });
   }
-  //res.status(500).json({ message: 'Not implemented' });
-  //res.json({ data: repository.findAll() });
 }
 
 
@@ -77,21 +76,33 @@ async function findOne(req: Request, res: Response) {
   }
 }
 
+async function findSubscriptionById(ids: number[]): Promise<Subscription[]> { 
+  let subscriptions: Subscription[] = [];
+  for (const id of ids) {
+    if (id !== undefined) {
+      subscriptions.push(await em.findOneOrFail(Subscription, { id }));
+      };
+    }
+  return subscriptions;
+}
 async function add(req: Request, res: Response) {
   try{
-    const purchaseRecord	 = em.create(PurchaseRecord, req.body.sanitizedInput)
+    const purchaseRecord	 = em.create(PurchaseRecord, req.body)
+    req.body.subscriptions = await findSubscriptionById(req.body.subscriptions);
     await em.flush()
     res.status(201).json({ message: 'PurchaseRecord created', data: purchaseRecord }
-    )}catch (error:any) {
+    )
+    }catch (error:any) {
       res.status(500).send({ message: error.message })
   }
+
 }
 
 async function update(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
     const purchaseRecord = await em.findOneOrFail(PurchaseRecord, { id })
-    em.assign(purchaseRecord, req.body)
+    em.assign(purchaseRecord, req.body.sanitizedInput)
     await em.flush();
     res.status(200).json({ message: 'PurchaseRecord updated', data: purchaseRecord });
   }catch (error:any) {

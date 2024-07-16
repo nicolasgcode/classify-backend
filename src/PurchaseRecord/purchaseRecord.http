@@ -7,8 +7,8 @@ POST http://localhost:3000/api/subscriptions/purchaseRecords
 Content-Type: application/json 
 
 {
-  "montoTotal": 1000,
-  "subscriptions": [27]
+  "montoTotal": 5000,
+  "subscriptions": [27, 28]
 }
 ###ID
 @id = {{createPurchaseRecord.response.body.data.id}} 
