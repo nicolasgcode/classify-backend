@@ -1,12 +1,11 @@
-/* import { Request, Response, NextFunction } from 'express';
-import { UserRepository } from './user.repository.js';
+import { Request, Response, NextFunction } from 'express';
 import { User } from './user.entity.js';
+import {orm} from '../shared/orm.js';
 
-const repository = new UserRepository();
+const em = orm.em;
 
 function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    id: req.body.id,
     dni: req.body.dni,
     name: req.body.name,
     surname: req.body.surname,
@@ -20,54 +19,66 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
   }); // Remove undefined
   next();
 }
-function findAll(req: Request, res: Response) {
-  res.json({ data: repository.findAll() });
-}
 
-function findOne(req: Request, res: Response) {
-  const id = req.params.id;
-  const user = repository.findOne({ id });
-  if (!user) {
-    return res.status(404).send({ message: 'User not found' });
+async function findAll(req: Request, res: Response) {
+  try {
+    const users = await em.find(
+      User,
+      {},
+      { populate: ['purchaseRecords'] }
+    )
+    res.status(200).json({ message: 'found all users', data: users })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
-  res.json({ data: user });
 }
 
-function add(req: Request, res: Response) {
-  const input = req.body.sanitizedInput;
-
-  const userInput = new User(
-    input.id,
-    input.dni,
-    input.name,
-    input.surname,
-    input.email
-  );
-
-  const user = repository.add(userInput);
-  return res.status(201).send({ message: 'User created', data: user });
-}
-
-function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id;
-  const user = repository.update(req.body.sanitizedInput);
-
-  if (!user) {
-    return res.status(404).send({ message: 'User not found' });
+async function findOne(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id)
+    const user = await em.findOneOrFail(
+      User,
+      { id },
+      { populate: ['purchaseRecords'] }
+    )
+    res.status(200).json({ message: 'found user', data: user })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
-
-  res.status(200).send({ message: 'User edited successfully!', data: user });
 }
 
-function remove(req: Request, res: Response) {
-  const id = req.params.id;
-  const user = repository.delete({ id });
-
-  if (!user) {
-    return res.status(404).send({ message: 'User not found' });
+async function add(req: Request, res: Response) {
+  try {
+    const user = em.create(User, req.body.sanitizedInput)
+    await em.flush()
+    res.status(201).json({ message: 'user created', data: user })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
-  return res.status(200).send({ message: 'User deleted successfully' });
+}
+
+async function update(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id)
+    const userToUpdate = await em.findOneOrFail(User, { id })
+    em.assign(userToUpdate, req.body.sanitizedInput)
+    await em.flush()
+    res
+      .status(200)
+      .json({ message: 'user updated', data: userToUpdate })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+async function remove(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id)
+    const user = em.getReference(User, id)
+    await em.removeAndFlush(user)
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 export { sanitizeUserInput, findAll, findOne, add, update, remove };
- */

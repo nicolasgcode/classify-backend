@@ -1,31 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
 import { PurchaseRecord } from './purchaseRecord.entity.js';
 import {orm} from '../shared/orm.js';
-import { Subscription } from '../subscription/subscription.entity.js';
-import { User } from '../user/user.entity.js';
-
 
 const em = orm.em;
 
 em.getRepository(PurchaseRecord);
 function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFunction) {
-  const { id, montoTotal, purchaseAt } = req.body;
+  const { montoTotal, subscription, user  } = req.body;
   // Validación de tipos
   try {
-    if (req.body.montoTotal !== undefined) {
-      req.body.montoTotal = parseInt(req.body.montoTotal);
+    if (montoTotal !== undefined) {
+      req.body.montoTotal = parseInt(montoTotal);
     }
   } catch (error) {
     return res.status(400).send({ message: 'Invalid montoTotal'});
-  }
-  try {
-    if (req.body.purchaseAt !== undefined) {
-      req.body.purchaseAt = new Date(req.body.purchaseAt);
-    }else{
-      req.body.purchaseAt = new Date();
-    }
-  } catch (error) {
-      return res.status(400).send({ message: 'Invalid purchaseAt' });
   }
   /* try{  
     for (let i of req.body.subscriptions) {
@@ -39,10 +27,9 @@ function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFuncti
       
   // Creación de objeto con propiedades válidas
   req.body.sanitizedInput = {
-    id: req.body.id,
     montoTotal: req.body.montoTotal,
-    purchaseAt: req.body.purchaseAt,
-    subscriptions: req.body.subscriptions,
+    subscription: req.body.subscription,
+    user: req.body.user,
   };
 
   // Eliminación de propiedades undefined
@@ -56,26 +43,30 @@ function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFuncti
 
 async function findAll(req: Request, res: Response) {
   try {
-    const purchaseRecords = await em.find(PurchaseRecord, {});
-    res.json({message: 'Finded all purchaseRecords', data: purchaseRecords });
+    const purchaseRecords = await em.find(
+      PurchaseRecord, 
+      {},
+      { populate: ['subscription',  'user'] })
+    res.json({message: 'Finded all purchaseRecords', data: purchaseRecords })
   }catch (error:any) {
-    res.status(500).json({ message: 'Error finding purchaseRecords' });
+    res.status(500).json({ message: error.message })
   }
 }
-
 
 async function findOne(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
-    const purchaseRecord = await em.findOneOrFail(PurchaseRecord, { id })
-    res
-      .status(200)
-      .json({ message: 'Finded purchaseRecord', data: purchaseRecord })
+    const purchaseRecord = await em.findOneOrFail(
+      PurchaseRecord, 
+      { id },
+      { populate: ['subscription', 'user'] })
+    res.status(200).json({ message: 'Finded purchaseRecord', data: purchaseRecord })
   }catch (error:any) {  
-    res.status(500).send({ message: error.message })
+    res.status(500).json({ message: error.message })
   }
-}
+} 
 
+/* 
 async function findSubscriptionById(ids: number[]): Promise<Subscription[]> { 
   let subscriptions: Subscription[] = [];
   for (const id of ids) {
@@ -85,15 +76,16 @@ async function findSubscriptionById(ids: number[]): Promise<Subscription[]> {
     }
   return subscriptions;
 }
+ */
 async function add(req: Request, res: Response) {
   try{
     const purchaseRecord	 = em.create(PurchaseRecord, req.body)
-    req.body.subscriptions = await findSubscriptionById(req.body.subscriptions);
+    //req.body.subscriptions = await findSubscriptionById(req.body.subscriptions);
     await em.flush()
     res.status(201).json({ message: 'PurchaseRecord created', data: purchaseRecord }
     )
     }catch (error:any) {
-      res.status(500).send({ message: error.message })
+      res.status(500).json({ message: error.message })
   }
 
 }
@@ -101,12 +93,12 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
-    const purchaseRecord = await em.findOneOrFail(PurchaseRecord, { id })
-    em.assign(purchaseRecord, req.body.sanitizedInput)
+    const purchaseRecordToUpdate = await em.findOneOrFail(PurchaseRecord, { id })
+    em.assign(purchaseRecordToUpdate, req.body.sanitizedInput)
     await em.flush();
-    res.status(200).json({ message: 'PurchaseRecord updated', data: purchaseRecord });
+    res.status(200).json({ message: 'PurchaseRecord updated', data: purchaseRecordToUpdate });
   }catch (error:any) {
-    res.status(500).send({ message: error.message })
+    res.status(500).json({ message: error.message })
   }
 }
 
@@ -117,7 +109,7 @@ async function remove(req: Request, res: Response) {
     await em.removeAndFlush(purchaseRecord)
     res.status(204).json({ message: 'PurchaseRecord deleted' });
   }catch (error:any) {
-    res.status(500).send({ message: error.message })
+    res.status(500).json({ message: error.message })
   }
   //res.status(500).json({ message: 'Not implemented' });
 }
