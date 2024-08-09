@@ -11,12 +11,12 @@ export class PurchaseRecord extends BaseEntity {
     @Property({type: DateTimeType})
     purchaseAt = new Date()
     
-    @ManyToOne(() => Subscription, { nullable: true })
-    subscription?: Rel<Subscription> 
-    
+    @ManyToOne(() => Subscription, { 
+    nullable: false })
+    subscription!: Rel<Subscription> 
     
     @ManyToOne(() => User, {
-        nullable: false })
+    nullable: false })
     user!: Rel<User> 
    
 }

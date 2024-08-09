@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  sanitizePurchaseRecordInput,
   findAll,
   findOne,
   add,

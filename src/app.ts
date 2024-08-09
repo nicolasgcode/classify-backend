@@ -6,7 +6,7 @@ import { subscriptionRouter } from './subscription/subscription.routes.js';
 import { topicRouter } from './topic/topic.routes.js';
 import {orm, syncSchema} from './shared/orm.js';
 import { RequestContext } from '@mikro-orm/core';
-import { purchaseRecordRouter } from './purchaseRecord/purchaseRecord.routes.js';
+import { purchaseRecordRouter } from './PurchaseRecord/purchaseRecord.routes.js';
 
 
 dotenv.config();

@@ -1,6 +1,6 @@
 import { Cascade, Entity, OneToMany, Property, Collection} from '@mikro-orm/core';
 import {BaseEntity} from '../shared/baseEntity.entity.js';
-import { PurchaseRecord } from '../purchaseRecord/purchaseRecord.entity.js';
+import { PurchaseRecord } from '../PurchaseRecord/purchaseRecord.entity.js';
 @Entity()
 export class Subscription extends BaseEntity {
     @Property({nullable: false, unique: true})

@@ -5,25 +5,32 @@ import {orm} from '../shared/orm.js';
 const em = orm.em;
 
 em.getRepository(PurchaseRecord);
-function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFunction) {
+function sanitizePurchaseRecordInput(req: Request, res: Response, next: NextFunction) {
   const { montoTotal, subscription, user  } = req.body;
   // Validación de tipos
   try {
-    if (montoTotal !== undefined) {
+    if (montoTotal !== Number) {
       req.body.montoTotal = parseInt(montoTotal);
     }
   } catch (error) {
     return res.status(400).send({ message: 'Invalid montoTotal'});
   }
-  /* try{  
-    for (let i of req.body.subscriptions) {
-      if (i !== undefined) {
-        i = parseInt(i);
-      }
+  try{  
+    if(subscription !== Number) {
+      req.body.subscription = parseInt(subscription);
+     
     }
   }catch (error) {
-    return res.status(400).send({ message: 'Invalid subscriptions' });
-  } */
+    return res.status(400).send({ message: 'Invalid subscription' });
+  } 
+  try{  
+    if(user !== Number) {
+      req.body.user = parseInt(user);
+     
+    }
+  }catch (error) {
+    return res.status(400).send({ message: 'Invalid user' });
+  } 
       
   // Creación de objeto con propiedades válidas
   req.body.sanitizedInput = {
@@ -43,11 +50,13 @@ function sanitizeSubscriptionInput(req: Request, res: Response, next: NextFuncti
 
 async function findAll(req: Request, res: Response) {
   try {
+    res.json({ message: 'Finded all purchaseRecords'});
     const purchaseRecords = await em.find(
       PurchaseRecord, 
       {},
-      { populate: ['subscription',  'user'] })
-    res.json({message: 'Finded all purchaseRecords', data: purchaseRecords })
+      { populate: ['subscription',  'user'] }
+    )
+    res.json({message: 'Finded all purchaseRecords', data: purchaseRecords }) 
   }catch (error:any) {
     res.status(500).json({ message: error.message })
   }
@@ -66,21 +75,9 @@ async function findOne(req: Request, res: Response) {
   }
 } 
 
-/* 
-async function findSubscriptionById(ids: number[]): Promise<Subscription[]> { 
-  let subscriptions: Subscription[] = [];
-  for (const id of ids) {
-    if (id !== undefined) {
-      subscriptions.push(await em.findOneOrFail(Subscription, { id }));
-      };
-    }
-  return subscriptions;
-}
- */
 async function add(req: Request, res: Response) {
   try{
     const purchaseRecord	 = em.create(PurchaseRecord, req.body)
-    //req.body.subscriptions = await findSubscriptionById(req.body.subscriptions);
     await em.flush()
     res.status(201).json({ message: 'PurchaseRecord created', data: purchaseRecord }
     )
@@ -114,4 +111,4 @@ async function remove(req: Request, res: Response) {
   //res.status(500).json({ message: 'Not implemented' });
 }
 
-export {findAll, findOne, add, update, remove };
+export {findAll, findOne, add, update, remove, sanitizePurchaseRecordInput};
