@@ -1,6 +1,6 @@
 import { Cascade, Entity, OneToMany, Property, Collection} from '@mikro-orm/core';
 import {BaseEntity} from '../shared/baseEntity.entity.js';
-import { PurchaseRecord } from '../PurchaseRecord/purchaseRecord.entity.js';
+import { SubsPurchaseRecord } from '../purchaseRecord/subsPurchaseRecord.entity.js';
 @Entity()
 export class Subscription extends BaseEntity {
     @Property({nullable: false, unique: true})
@@ -12,9 +12,9 @@ export class Subscription extends BaseEntity {
     @Property({nullable: false})
     price!: number 
 
-    @OneToMany(() => PurchaseRecord, (purchaseRecord) => purchaseRecord.subscription, {
+    @OneToMany(() => SubsPurchaseRecord, (subsPurchaseRecord) => subsPurchaseRecord.subscription, {
         cascade: [Cascade.ALL],
         nullable: true
       })
-      purchaseRecords = new Collection<PurchaseRecord>(this);
+      subsPurchaseRecords = new Collection<SubsPurchaseRecord>(this);
 }

@@ -1,19 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
-import { PurchaseRecord } from './purchaseRecord.entity.js';
+import { SubsPurchaseRecord } from './subsPurchaseRecord.entity.js';
 import {orm} from '../shared/orm.js';
 
 const em = orm.em;
 
-em.getRepository(PurchaseRecord);
-function sanitizePurchaseRecordInput(req: Request, res: Response, next: NextFunction) {
-  const { montoTotal, subscription, user  } = req.body;
+em.getRepository(SubsPurchaseRecord);
+function sanitizeSubsPurchaseRecordInput(req: Request, res: Response, next: NextFunction) {
+  const { totalAmount, subscription, user  } = req.body;
   // Validación de tipos
   try {
-    if (montoTotal !== Number) {
-      req.body.montoTotal = parseInt(montoTotal);
+    if (totalAmount !== Number) {
+      req.body.totalAmount = parseInt(totalAmount);
     }
   } catch (error) {
-    return res.status(400).send({ message: 'Invalid montoTotal'});
+    return res.status(400).send({ message: 'Invalid totalAmount'});
   }
   try{  
     if(subscription !== Number) {
@@ -34,7 +34,7 @@ function sanitizePurchaseRecordInput(req: Request, res: Response, next: NextFunc
       
   // Creación de objeto con propiedades válidas
   req.body.sanitizedInput = {
-    montoTotal: req.body.montoTotal,
+    totalAmount: req.body.totalAmount,
     subscription: req.body.subscription,
     user: req.body.user,
   };
@@ -50,13 +50,13 @@ function sanitizePurchaseRecordInput(req: Request, res: Response, next: NextFunc
 
 async function findAll(req: Request, res: Response) {
   try {
-    res.json({ message: 'Finded all purchaseRecords'});
-    const purchaseRecords = await em.find(
-      PurchaseRecord, 
+    res.json({ message: 'Finded all subsPurchaseRecords'});
+    const subsPurchaseRecords = await em.find(
+      SubsPurchaseRecord, 
       {},
       { populate: ['subscription',  'user'] }
     )
-    res.json({message: 'Finded all purchaseRecords', data: purchaseRecords }) 
+    res.json({message: 'Finded all subsPurchaseRecords', data: subsPurchaseRecords }) 
   }catch (error:any) {
     res.status(500).json({ message: error.message })
   }
@@ -65,11 +65,11 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
-    const purchaseRecord = await em.findOneOrFail(
-      PurchaseRecord, 
+    const subsPurchaseRecord = await em.findOneOrFail(
+      SubsPurchaseRecord, 
       { id },
       { populate: ['subscription', 'user'] })
-    res.status(200).json({ message: 'Finded purchaseRecord', data: purchaseRecord })
+    res.status(200).json({ message: 'Finded subsPurchaseRecord', data: subsPurchaseRecord })
   }catch (error:any) {  
     res.status(500).json({ message: error.message })
   }
@@ -77,9 +77,9 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try{
-    const purchaseRecord	 = em.create(PurchaseRecord, req.body)
+    const subsPurchaseRecord	 = em.create(SubsPurchaseRecord, req.body)
     await em.flush()
-    res.status(201).json({ message: 'PurchaseRecord created', data: purchaseRecord }
+    res.status(201).json({ message: 'SubsPurchaseRecord created', data: subsPurchaseRecord }
     )
     }catch (error:any) {
       res.status(500).json({ message: error.message })
@@ -90,10 +90,10 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
-    const purchaseRecordToUpdate = await em.findOneOrFail(PurchaseRecord, { id })
-    em.assign(purchaseRecordToUpdate, req.body.sanitizedInput)
+    const subsPurchaseRecordToUpdate = await em.findOneOrFail(SubsPurchaseRecord, { id })
+    em.assign(subsPurchaseRecordToUpdate, req.body.sanitizedInput)
     await em.flush();
-    res.status(200).json({ message: 'PurchaseRecord updated', data: purchaseRecordToUpdate });
+    res.status(200).json({ message: 'SubsPurchaseRecord updated', data: subsPurchaseRecordToUpdate });
   }catch (error:any) {
     res.status(500).json({ message: error.message })
   }
@@ -102,13 +102,13 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
-    const purchaseRecord = em.getReference(PurchaseRecord, id);
-    await em.removeAndFlush(purchaseRecord)
-    res.status(204).json({ message: 'PurchaseRecord deleted' });
+    const subsPurchaseRecord = em.getReference(SubsPurchaseRecord, id);
+    await em.removeAndFlush(subsPurchaseRecord)
+    res.status(204).json({ message: 'SubsPurchaseRecord deleted' });
   }catch (error:any) {
     res.status(500).json({ message: error.message })
   }
   //res.status(500).json({ message: 'Not implemented' });
 }
 
-export {findAll, findOne, add, update, remove, sanitizePurchaseRecordInput};
+export {findAll, findOne, add, update, remove, sanitizeSubsPurchaseRecordInput};
