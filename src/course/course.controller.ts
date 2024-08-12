@@ -5,7 +5,7 @@ import {orm} from '../shared/orm.js';
 const em = orm.em;
 em.getRepository(Course);
 function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
-  const { title, price} = req.body;
+  const { title, price, topics} = req.body;
   // Validación de tipos
   try {
     if (title !== undefined) {
@@ -21,11 +21,22 @@ function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
       return res.status(400).send({ message: 'Invalid price' });
   }
+/*   try {
+    for (let topic of topics) {
+      if (topic !== Number) {
+        topic = parseInt(topic);
+      }
+    }
+    req.body.topics = topics;
+  }catch (error) {
+    return res.status(400).send({ message: 'Invalid topics' });
+  } */
   
   // Creación de objeto con propiedades válidas
   req.body.sanitizedInput = {
     title: req.body.title,
     price: req.body.price,
+    topics: req.body.topics,
   };
 
   // Eliminación de propiedades undefined
@@ -39,7 +50,11 @@ function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const courses = await em.find(Course, {});
+    const courses = await em.find(
+      Course,
+      {},
+      { populate: ['topics'] }
+    );
     res.json({message: 'Finded all courses', data: courses });
   }catch (error:any) {
     res.status(500).json({ message: error.message });
@@ -49,7 +64,11 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
-    const course = await em.findOneOrFail(Course, { id })
+    const course = await em.findOneOrFail(
+      Course,
+      { id },
+      { populate: ['topics'] }
+    )
     res.status(200).json({ message: 'Finded course', data: course })
   }catch (error:any) {  
     res.status(500).json({ message: error.message })
@@ -70,7 +89,7 @@ async function update(req: Request, res: Response) {
   try{
     const id = Number.parseInt(req.params.id)
     const course = em.getReference(Course, id);
-    em.assign(course, req.body);
+    em.assign(course, req.body.sanitizedInput);
     await em.flush();
     res.status(200).json({ message: 'Course updated', data: course });
   }catch (error:any) {

@@ -12,6 +12,6 @@ export const courseRouter = Router();
 
 courseRouter.get('/', findAll);
 courseRouter.get('/:id', findOne);
-courseRouter.post('/', add);
-courseRouter.put('/:id', update);
+courseRouter.post('/',sanitizeCourseInput, add);
+courseRouter.put('/:id',sanitizeCourseInput, update);
 courseRouter.delete('/:id', remove);

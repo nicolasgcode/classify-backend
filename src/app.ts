@@ -1,15 +1,14 @@
 import 'reflect-metadata';
 import express from 'express';
 import dotenv from 'dotenv';
-import { userRouter } from './user/user.routes.js';
-import { subscriptionRouter } from './subscription/subscription.routes.js';
-import { topicRouter } from './topic/topic.routes.js';
 import {orm, syncSchema} from './shared/orm.js';
 import { RequestContext } from '@mikro-orm/core';
-import { purchaseRecordRouter } from './purchaseRecord/purchaseRecord.routes.js';
+import { userRouter } from './user/user.routes.js';
+import { subscriptionRouter } from './subscription/subscription.routes.js';
+import { subsPurchaseRecordRouter } from './purchaseRecord/subsPurchaseRecord.routes.js';
 import { courseRouter } from './course/course.routes.js';
-
-
+import { coursePurchaseRecordRouter } from './purchaseRecord/coursePurchaseRecord.routes.js';
+import { topicRouter } from './topic/topic.routes.js';
 dotenv.config();
 
 const app = express();
@@ -25,16 +24,20 @@ app.use((req, res, next) => {
 //Middlewares
 app.use(express.json());
 
+app.use('/api/users', userRouter);
 
 app.use('/api/subscriptions', subscriptionRouter)
+app.use('/api/subscriptions/purchaseRecords', subsPurchaseRecordRouter);
 
 app.use('/api/courses', courseRouter);
-
+app.use('/api/courses/purchaseRecords', coursePurchaseRecordRouter);
 app.use('/api/topics', topicRouter);
 
-app.use('/api/subscriptions/purchaseRecords', purchaseRecordRouter);
 
-app.use('/api/users', userRouter);
+
+
+
+
 
 app.use((_, res) => {
   res.status(404).send({ message: 'Resource not found' });

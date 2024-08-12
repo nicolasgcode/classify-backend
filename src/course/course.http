@@ -7,8 +7,9 @@ POST http://localhost:3000/api/courses
 Content-Type: application/json 
 
 {
-  "tittle": "***",
-  "price": "30"
+  "title": "title",
+  "price": "30",
+  "topics": [1]
 }
 
 ### ID

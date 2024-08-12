@@ -77,7 +77,7 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try{
-    const coursePurchaseRecord	 = em.create(CoursePurchaseRecord, req.body)
+    const coursePurchaseRecord	 = em.create(CoursePurchaseRecord, req.body.sanitizedInput)
     await em.flush()
     res.status(201).json({ message: 'CoursePurchaseRecord created', data: coursePurchaseRecord }
     )
