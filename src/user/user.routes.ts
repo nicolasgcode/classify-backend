@@ -14,5 +14,4 @@ userRouter.get('/', findAll);
 userRouter.get('/:id', findOne);
 userRouter.post('/', sanitizeUserInput, add);
 userRouter.put('/:id', sanitizeUserInput, update);
-userRouter.patch('/:id', sanitizeUserInput, update);
 userRouter.delete('/:id', remove);
