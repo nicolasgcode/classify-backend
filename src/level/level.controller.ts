@@ -63,5 +63,15 @@ async function update(req: Request, res: Response) {
   }
 }
 
+async function remove(req: Request, res: Response) {
+  try{
+    const id = Number.parseInt(req.params.id)
+    const course = em.getReference(Level, id);
+    await em.removeAndFlush(course)
+    res.status(204).json({ message: 'Level deleted' });
+  }catch (error:any) {
+    res.status(500).json({ message: error.message })
+  }
+}
 
 export { sanitizeLevelInput, findAll, findOne, add, update, remove };
