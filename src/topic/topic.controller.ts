@@ -52,26 +52,18 @@ async function add(req: Request, res: Response) {
 }
 
 async function update(req: Request, res: Response) {
-  try{
-    const id = Number.parseInt(req.params.id)
+  try {
+    const id = Number.parseInt(req.params.id);
     const topic = em.getReference(Topic, id);
     em.assign(topic, req.body);
     await em.flush();
     res.status(200).json({ message: 'Topic updated', data: topic });
-  }catch (error:any) {
-    res.status(500).send({ message: error.message })
+  } catch (error: any) {
+    res.status(500).send({ message: error.message });
   }
 }
+ 
 
-async function remove(req: Request, res: Response) {
-  try{
-    const id = Number.parseInt(req.params.id)
-    const topic = em.getReference(Topic, id);
-    em.removeAndFlush(topic)
-    res.status(204).json({ message: 'Topic deleted' });
-  }catch (error:any) {
-    res.status(500).send({ message: error.message })
-  }
-}
+// Make sure the file extension is correct and the file exists in the same directory
+import { sanitizeTopicInput, findAll, findOne, add, update, remove } from './topic.service.ts';
 
-export { sanitizeTopicInput, findAll, findOne, add, update, remove };

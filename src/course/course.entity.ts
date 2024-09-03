@@ -1,7 +1,8 @@
-import { Cascade, Entity, OneToMany, Property, Collection, DateTimeType, ManyToMany,Rel} from '@mikro-orm/core';
+import { Cascade, Entity, OneToMany, Property, Collection, DateTimeType, ManyToMany, Rel, ManyToOne} from '@mikro-orm/core';
 import {BaseEntity} from '../shared/baseEntity.entity.js';
-import { CoursePurchaseRecord } from '../purchaseRecord/coursePurchaseRecord.entity.js';
+import { CoursePurchaseRecord } from '../purchaseRecord/coursePurchaseRecord.entity';
 import { Topic } from '../topic/topic.entity.js';
+import { Level } from '../level/level.entity.js';
 @Entity()
 export class Course extends BaseEntity {
     @Property({nullable: false, unique: true})
@@ -27,4 +28,7 @@ export class Course extends BaseEntity {
         owner: true
     })
     topics!: Topic[]
+
+    @ManyToOne(() => Level)
+    levels!: Level[]
 }
