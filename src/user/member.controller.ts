@@ -24,7 +24,8 @@ async function findAll(req: Request, res: Response) {
   try {
     const users = await em.find(
       User,
-      {}
+      {},
+      { populate: ['purchaseRecords'] }
     )
     res.status(200).json({ message: 'found all users', data: users })
   } catch (error: any) {
@@ -37,7 +38,8 @@ async function findOne(req: Request, res: Response) {
     const id = Number.parseInt(req.params.id)
     const user = await em.findOneOrFail(
       User,
-      { id }
+      { id },
+      { populate: ['purchaseRecords'] }
     )
     res.status(200).json({ message: 'found user', data: user })
   } catch (error: any) {

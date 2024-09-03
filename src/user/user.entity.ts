@@ -2,7 +2,7 @@ import { Cascade, Entity, OneToMany, Property, DateTimeType, Collection, ManyToO
 import {BaseEntity} from '../shared/baseEntity.entity.js';
 import { PurchaseRecord } from '../purchaseRecord/purchaseRecord.entity.js';
 @Entity()
-export class User extends BaseEntity {
+export abstract class User extends BaseEntity {
 
     @Property({unique: true})
     dni!: number
@@ -16,10 +16,7 @@ export class User extends BaseEntity {
     @Property({nullable: false})
     email!: string
 
-    @OneToMany(() => PurchaseRecord, (purchaseRecord) => purchaseRecord.user, {
-      cascade: [Cascade.ALL],
-      nullable: true })
-      purchaseRecords?: PurchaseRecord
+    
 }
 /* 
 export class User {

@@ -24,7 +24,7 @@ async function findAll(req: Request, res: Response) {
   try {
     const users = await em.find(
       User,
-      {}
+      {},
     )
     res.status(200).json({ message: 'found all users', data: users })
   } catch (error: any) {

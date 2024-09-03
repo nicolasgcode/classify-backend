@@ -1,6 +1,6 @@
 import { Cascade, Entity, OneToMany, Property, DateTimeType, ManyToOne, Rel} from '@mikro-orm/core';
 import {BaseEntity} from '../shared/baseEntity.entity.js';
-import { User } from '../user/user.entity.js';
+import { Member } from '../user/member.entity.js';
 @Entity()
 export abstract class PurchaseRecord extends BaseEntity {
 
@@ -10,8 +10,8 @@ export abstract class PurchaseRecord extends BaseEntity {
     @Property({type: DateTimeType})
     purchaseAt = new Date()
     
-    @ManyToOne(() => User, {
+    @ManyToOne(() => Member, {
     nullable: false })
-    user!: Rel<User> 
+    member!: Rel<Member> 
    
 }
