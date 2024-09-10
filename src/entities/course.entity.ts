@@ -41,8 +41,13 @@ export class Course extends BaseEntity {
     cascade: [Cascade.ALL],
     owner: true,
   })
-  topics!: Topic[];
+  topics = new Collection<Topic>(this);
 
-  @ManyToOne(() => Level)
-  levels!: Level[];
+  @OneToMany(() => Level, (level) => level.course,
+    {
+      cascade: [Cascade.ALL],
+      nullable: true,
+    }
+)
+  levels = new Collection<Level>(this);
 }
