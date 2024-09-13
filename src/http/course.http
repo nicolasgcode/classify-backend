@@ -7,10 +7,10 @@ POST http://localhost:3000/api/courses
 Content-Type: application/json 
 
 {
-  "title": "title",
-  "price": "30",
-  "topics": [1]
-}
+    "title": "Curso de React",
+    "price": 100,
+    "level": 1
+  }
 
 ### ID
 @id = {{createCourse.response.body.data.id}}

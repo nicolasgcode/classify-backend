@@ -4,7 +4,7 @@ import { orm } from '../shared/orm.js';
 
 const em = orm.em;
 
-function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
+function sanitizeUnitInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     id: req.body.id,
     name: req.body.name,
@@ -69,4 +69,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeUserInput, findAll, findOne, add, update, remove };
+export { sanitizeUnitInput, findAll, findOne, add, update, remove };

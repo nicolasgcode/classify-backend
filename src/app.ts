@@ -8,6 +8,7 @@ import { courseRouter } from './routes/course.routes.js';
 import { coursePurchaseRecordRouter } from './routes/coursePurchaseRecord.routes.js';
 import { topicRouter } from './routes/topic.routes.js';
 import { RequestContext } from '@mikro-orm/core';
+import { levelRouter } from './routes/level.routes.js';
 dotenv.config();
 
 const app = express();
@@ -27,7 +28,7 @@ app.use(express.json());
 
 app.use('/api/subscriptions', subscriptionRouter);
 app.use('/api/subscriptions/purchaseRecords', subsPurchaseRecordRouter);
-
+app.use('/api/levels', levelRouter);
 app.use('/api/courses', courseRouter);
 app.use('/api/courses/purchaseRecords', coursePurchaseRecordRouter);
 app.use('/api/topics', topicRouter);

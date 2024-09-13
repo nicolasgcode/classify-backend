@@ -2,13 +2,9 @@ import {
   Cascade,
   Entity,
   OneToMany,
-  Property,
-  DateTimeType,
   Collection,
-  ManyToOne,
-  Rel,
 } from '@mikro-orm/core';
-import { User } from './user.entity.js';
+import { User } from './../shared/user.entity.js';
 import { CoursePurchaseRecord } from './coursePurchaseRecord.entity.js';
 import { SubsPurchaseRecord } from './subsPurchaseRecord.entity.js';
 
@@ -22,7 +18,8 @@ export class Member extends User {
       nullable: true,
     }
   )
-  coursePurchaseRecord?: CoursePurchaseRecord;
+  coursePurchaseRecords = new Collection<CoursePurchaseRecord>(this);
+
 
   @OneToMany(
     () => SubsPurchaseRecord,
@@ -32,5 +29,5 @@ export class Member extends User {
       nullable: true,
     }
   )
-  subsPurchaseRecord?: SubsPurchaseRecord;
+  subsPurchaseRecords = new Collection<SubsPurchaseRecord>(this);
 }

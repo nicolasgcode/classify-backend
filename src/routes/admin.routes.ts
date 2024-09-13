@@ -6,7 +6,7 @@ import {
   add,
   update,
   remove,
-} from '../controllers/user.controller.js';
+} from '../controllers/admin.controller.js';
 
 export const userRouter = Router();
 

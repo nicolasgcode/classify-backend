@@ -24,7 +24,7 @@ async function findAll(req: Request, res: Response) {
     const members = await em.find(
       Member,
       {},
-      { populate: ['subsPurchaseRecord', 'coursePurchaseRecord'] }
+      { populate: ['subsPurchaseRecords', 'coursePurchaseRecords'] }
     );
     res.status(200).json({ message: 'found all members', data: members });
   } catch (error: any) {

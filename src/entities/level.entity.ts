@@ -4,6 +4,7 @@ import {
   Property,
   Collection,
   OneToMany,
+  Rel,
 } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/baseEntity.entity.js';
 import { Course } from './course.entity.js';
@@ -15,8 +16,9 @@ export class Level extends BaseEntity {
   name!: string;
 
   @ManyToOne(() => Course)
-  course!: Course;
+  course!: Rel<Course>;
 
   @OneToMany(() => Unit, (unit) => unit.level)
   units = new Collection<Unit>(this);
 }
+ 

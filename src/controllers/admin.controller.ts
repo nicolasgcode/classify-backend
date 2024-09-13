@@ -31,7 +31,7 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const user = await em.findOneOrFail(User, { id });
+    const user = await em.findOneOrFail(Admin, { id });
     res.status(200).json({ message: 'found user', data: user });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -40,7 +40,7 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const user = em.create(User, req.body.sanitizedInput);
+    const user = em.create(Admin, req.body.sanitizedInput);
     await em.flush();
     res.status(201).json({ message: 'user created', data: user });
   } catch (error: any) {
@@ -51,7 +51,7 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const userToUpdate = await em.findOneOrFail(User, { id });
+    const userToUpdate = await em.findOneOrFail(Admin, { id });
     em.assign(userToUpdate, req.body.sanitizedInput);
     await em.flush();
     res.status(200).json({ message: 'user updated', data: userToUpdate });
@@ -63,7 +63,7 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const user = em.getReference(User, id);
+    const user = em.getReference(Admin, id);
     await em.removeAndFlush(user);
   } catch (error: any) {
     res.status(500).json({ message: error.message });

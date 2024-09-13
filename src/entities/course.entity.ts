@@ -49,5 +49,5 @@ export class Course extends BaseEntity {
       nullable: true,
     }
 )
-  levels = new Collection<Level>(this);
+  levels? = new Collection<Level>(this);
 }
