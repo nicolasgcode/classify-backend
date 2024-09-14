@@ -6,11 +6,26 @@ const em = orm.em;
 em.getRepository(Level);
 
 function sanitizeLevelInput(req: Request, res: Response, next: NextFunction) {
+  const { name, course } = req.body;
+   // Middleware
+    try {
+    if (name !== undefined) {
+      req.body.name = name.toString();
+    }
+  }catch (error) {
+    return res.status(400).send({ message: 'Invalid name' });
+  }
+  try {
+    if (course !== undefined) {
+      req.body.course = parseInt(course);
+    }
+  }catch (error) {
+    return res.status(400).send({ message: 'Invalid course' });
+  }
   req.body.sanitizedInput = {
-    //id: req.body.id,
     name: req.body.name,
-  }; // Middleware
-
+    course: req.body.course,
+  };
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined)
       delete req.body.sanitizedInput[key];

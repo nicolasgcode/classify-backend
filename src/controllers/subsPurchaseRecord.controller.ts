@@ -52,7 +52,6 @@ function sanitizeSubsPurchaseRecordInput(
 
 async function findAll(req: Request, res: Response) {
   try {
-    res.json({ message: 'found all subsPurchaseRecords' });
     const subsPurchaseRecords = await em.find(
       SubsPurchaseRecord,
       {},

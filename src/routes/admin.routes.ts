@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  sanitizeUserInput,
+  sanitizeAdminInput,
   findAll,
   findOne,
   add,
@@ -8,10 +8,10 @@ import {
   remove,
 } from '../controllers/admin.controller.js';
 
-export const userRouter = Router();
+export const adminRouter = Router();
 
-userRouter.get('/', findAll);
-userRouter.get('/:id', findOne);
-userRouter.post('/', sanitizeUserInput, add);
-userRouter.put('/:id', sanitizeUserInput, update);
-userRouter.delete('/:id', remove);
+adminRouter.get('/', findAll);
+adminRouter.get('/:id', findOne);
+adminRouter.post('/', sanitizeAdminInput, add);
+adminRouter.put('/:id', sanitizeAdminInput, update);
+adminRouter.delete('/:id', remove);

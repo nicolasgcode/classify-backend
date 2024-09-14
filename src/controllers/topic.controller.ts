@@ -6,12 +6,20 @@ const em = orm.em;
 em.getRepository(Topic);
 
 function sanitizeTopicInput(req: Request, res: Response, next: NextFunction) {
-  req.body.sanitizedInput = {
-    //id: req.body.id,
-    description: req.body.description,
-  }; // Middleware
+  const {description} = req.body; 
+  // Middleware
   //more checks here (content, type)
-
+  
+  try {
+    if (description !== undefined) {
+      req.body.sanitizedInput.description = description.toString();
+    }
+  } catch (error) {
+    return res.status(400).send({ message: 'Invalid description' });
+  }
+  req.body.sanitizedInput = {
+    description: req.body.description,
+  }
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined)
       delete req.body.sanitizedInput[key];

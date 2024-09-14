@@ -21,7 +21,7 @@ function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     return res.status(400).send({ message: 'Invalid price' });
   }
-  /*   try {
+  try {
     for (let topic of topics) {
       if (topic !== Number) {
         topic = parseInt(topic);
@@ -30,7 +30,7 @@ function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
     req.body.topics = topics;
   }catch (error) {
     return res.status(400).send({ message: 'Invalid topics' });
-  } */
+  } 
 
   // Creación de objeto con propiedades válidas
   req.body.sanitizedInput = {
@@ -50,7 +50,7 @@ function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const courses = await em.find(Course, {}, { populate: ['topics'] });
+    const courses = await em.find(Course, {}, { populate: ['topics', 'levels'] });
     res.json({ message: 'found all courses', data: courses });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -63,7 +63,7 @@ async function findOne(req: Request, res: Response) {
     const course = await em.findOneOrFail(
       Course,
       { id },
-      { populate: ['topics'] }
+      { populate: ['topics', 'levels'] }
     );
     res.status(200).json({ message: 'found course', data: course });
   } catch (error: any) {

@@ -4,7 +4,7 @@ import { orm } from '../shared/orm.js';
 
 const em = orm.em;
 
-function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
+function sanitizeAdminInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     dni: req.body.dni,
     name: req.body.name,
@@ -21,8 +21,8 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const users = await em.find(Admin, {});
-    res.status(200).json({ message: 'found all users', data: users });
+    const admins = await em.find(Admin, {});
+    res.status(200).json({ message: 'found all admins', data: admins });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -31,8 +31,8 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const user = await em.findOneOrFail(Admin, { id });
-    res.status(200).json({ message: 'found user', data: user });
+    const admin = await em.findOneOrFail(Admin, { id });
+    res.status(200).json({ message: 'found admin', data: admin });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -40,9 +40,9 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const user = em.create(Admin, req.body.sanitizedInput);
+    const admin = em.create(Admin, req.body.sanitizedInput);
     await em.flush();
-    res.status(201).json({ message: 'user created', data: user });
+    res.status(201).json({ message: 'admin created', data: admin });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -51,10 +51,10 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const userToUpdate = await em.findOneOrFail(Admin, { id });
-    em.assign(userToUpdate, req.body.sanitizedInput);
+    const adminToUpdate = await em.findOneOrFail(Admin, { id });
+    em.assign(adminToUpdate, req.body.sanitizedInput);
     await em.flush();
-    res.status(200).json({ message: 'user updated', data: userToUpdate });
+    res.status(200).json({ message: 'admin updated', data: adminToUpdate });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -63,11 +63,11 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const user = em.getReference(Admin, id);
-    await em.removeAndFlush(user);
+    const admin = em.getReference(Admin, id);
+    await em.removeAndFlush(admin);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
 
-export { sanitizeUserInput, findAll, findOne, add, update, remove };
+export { sanitizeAdminInput, findAll, findOne, add, update, remove };

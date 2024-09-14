@@ -4,7 +4,7 @@ import { orm } from '../shared/orm.js';
 
 const em = orm.em;
 
-function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
+function sanitizeMemberInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     dni: req.body.dni,
     name: req.body.name,
@@ -33,7 +33,7 @@ async function findAll(req: Request, res: Response) {
 }
 
 async function findOne(req: Request, res: Response) {
-  try {
+  try {       
     const id = Number.parseInt(req.params.id);
     const member = await em.findOneOrFail(Member, { id });
     res.status(200).json({ message: 'found member', data: member });
@@ -74,4 +74,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeUserInput, findAll, findOne, add, update, remove };
+export { sanitizeMemberInput, findAll, findOne, add, update, remove };

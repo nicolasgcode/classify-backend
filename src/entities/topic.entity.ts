@@ -1,9 +1,6 @@
 import {
-  Cascade,
   Entity,
   ManyToMany,
-  OneToMany,
-  PrimaryKey,
   Property,
   Collection,
 } from '@mikro-orm/core';
@@ -16,5 +13,5 @@ export class Topic extends BaseEntity {
   description!: string;
 
   @ManyToMany(() => Course, (course: Course) => course.topics, {})
-  courses = new Collection<Course>(this);
+  courses? = new Collection<Course>(this);
 }

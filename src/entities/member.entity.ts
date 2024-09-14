@@ -18,7 +18,7 @@ export class Member extends User {
       nullable: true,
     }
   )
-  coursePurchaseRecords = new Collection<CoursePurchaseRecord>(this);
+  coursePurchaseRecords? = new Collection<CoursePurchaseRecord>(this);
 
 
   @OneToMany(
@@ -29,5 +29,5 @@ export class Member extends User {
       nullable: true,
     }
   )
-  subsPurchaseRecords = new Collection<SubsPurchaseRecord>(this);
+  subsPurchaseRecords? = new Collection<SubsPurchaseRecord>(this);
 }

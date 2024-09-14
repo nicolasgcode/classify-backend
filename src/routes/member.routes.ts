@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  sanitizeUserInput,
+  sanitizeMemberInput,
   findAll,
   findOne,
   add,
@@ -12,6 +12,6 @@ export const memberRouter = Router();
 
 memberRouter.get('/', findAll);
 memberRouter.get('/:id', findOne);
-memberRouter.post('/', sanitizeUserInput, add);
-memberRouter.put('/:id', sanitizeUserInput, update);
+memberRouter.post('/', sanitizeMemberInput, add);
+memberRouter.put('/:id', sanitizeMemberInput, update);
 memberRouter.delete('/:id', remove);

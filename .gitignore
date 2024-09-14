@@ -4,6 +4,9 @@ coverage
 # API keys and secrets
 .env
 
+# Ormo config file
+shared/orm.ts
+
 # dependency directory
 node_modules
 

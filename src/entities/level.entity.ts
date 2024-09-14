@@ -19,6 +19,6 @@ export class Level extends BaseEntity {
   course!: Rel<Course>;
 
   @OneToMany(() => Unit, (unit) => unit.level)
-  units = new Collection<Unit>(this);
+  units? = new Collection<Unit>(this);
 }
  

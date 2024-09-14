@@ -10,7 +10,7 @@ function sanitizeCoursePurchaseRecordInput(
   res: Response,
   next: NextFunction
 ) {
-  const { totalAmount, course, user } = req.body;
+  const { totalAmount, course, member } = req.body;
   // Validación de tipos
   try {
     if (totalAmount !== Number) {
@@ -19,6 +19,7 @@ function sanitizeCoursePurchaseRecordInput(
   } catch (error) {
     return res.status(400).send({ message: 'Invalid totalAmount' });
   }
+
   try {
     if (course !== Number) {
       req.body.course = parseInt(course);
@@ -27,18 +28,18 @@ function sanitizeCoursePurchaseRecordInput(
     return res.status(400).send({ message: 'Invalid course' });
   }
   try {
-    if (user !== Number) {
-      req.body.user = parseInt(user);
+    if (member !== Number) {
+      req.body.member = parseInt(member);
     }
   } catch (error) {
-    return res.status(400).send({ message: 'Invalid user' });
+    return res.status(400).send({ message: 'Invalid member' });
   }
 
   // Creación de objeto con propiedades válidas
   req.body.sanitizedInput = {
     totalAmount: req.body.totalAmount,
     course: req.body.course,
-    user: req.body.user,
+    member: req.body.member,
   };
 
   // Eliminación de propiedades undefined
@@ -52,7 +53,6 @@ function sanitizeCoursePurchaseRecordInput(
 
 async function findAll(req: Request, res: Response) {
   try {
-    res.json({ message: 'found all coursePurchaseRecords' });
     const coursePurchaseRecords = await em.find(
       CoursePurchaseRecord,
       {},
