@@ -7,7 +7,7 @@ POST http://localhost:3000/api/topics
 Content-Type: application/json 
 
 {
-  "description": "Topic"
+  "description": "Topic 4"
 }
 
 ### ID

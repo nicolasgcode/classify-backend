@@ -9,7 +9,6 @@ import { Member } from './member.entity.js';
 
 @Entity()
 export class CoursePurchaseRecord extends PurchaseRecord {
-
   @ManyToOne(() => Course, {
     nullable: false,
   })
@@ -18,5 +17,4 @@ export class CoursePurchaseRecord extends PurchaseRecord {
     nullable: false,
   })
   member!: Rel<Member>;
-  
 }

@@ -20,7 +20,6 @@ export class Member extends User {
   )
   coursePurchaseRecords? = new Collection<CoursePurchaseRecord>(this);
 
-
   @OneToMany(
     () => SubsPurchaseRecord,
     (subsPurchaseRecord) => subsPurchaseRecord.member,

@@ -14,6 +14,4 @@ export abstract class PurchaseRecord extends BaseEntity {
 
   @Property({ type: DateTimeType })
   purchaseAt = new Date();
-
-
 }

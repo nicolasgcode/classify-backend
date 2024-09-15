@@ -17,16 +17,10 @@ import { Level } from './level.entity.js';
 export class Course extends BaseEntity {
   @Property({ nullable: false, unique: true })
   title!: string;
-  /* 
-    @Property({nullable: false, unique: true})
-    description!: string
- */
   @Property({ type: DateTimeType })
   createAt = new Date();
-
   @Property({ nullable: false })
   price!: number;
-
   @OneToMany(
     () => CoursePurchaseRecord,
     (coursePurchaseRecord) => coursePurchaseRecord.course,
@@ -36,13 +30,11 @@ export class Course extends BaseEntity {
     }
   )
   coursePurchaseRecords? = new Collection<CoursePurchaseRecord>(this);
-
   @ManyToMany(() => Topic, (topic) => topic.courses, {
     cascade: [Cascade.ALL],
     owner: true,
   })
   topics = new Collection<Topic>(this);
-
   @OneToMany(() => Level, (level) => level.course,
     {
       cascade: [Cascade.ALL],

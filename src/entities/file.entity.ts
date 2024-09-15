@@ -4,15 +4,10 @@ import { Unit } from './unit.entity.js';
 
 @Entity()
 export class File extends BaseEntity {
-
   @Property({ nullable: false, unique: true })
   name!: string;
-
   @Property({ nullable: false })
   type!: string;
-
   @ManyToOne(() => Unit, {nullable: false })
   unit!: Rel<Unit>;
-
-
 }

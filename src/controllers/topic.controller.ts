@@ -30,7 +30,11 @@ function sanitizeTopicInput(req: Request, res: Response, next: NextFunction) {
 async function findAll(req: Request, res: Response) {
   try {
     const topics = await em.find(Topic, {});
-    res.json({ message: 'Finded all topics', data: topics });
+    res.json(
+      {
+      //message: 'Finded all topics',
+      data: topics
+      });
   } catch (error: any) {
     res.status(500).json({ message: 'Error finding topics' });
   }
@@ -40,7 +44,11 @@ async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const topic = await em.findOneOrFail(Topic, { id });
-    res.status(200).json({ message: 'Finded topic', data: topic });
+    res.status(200).json(
+      { 
+        //message: 'Finded topic',
+        data: topic 
+      });
   } catch (error: any) {
     res.status(500).send({ message: error.message });
   }

@@ -14,10 +14,8 @@ import { Unit } from './unit.entity.js';
 export class Level extends BaseEntity {
   @Property({ nullable: false, unique: true })
   name!: string;
-
   @ManyToOne(() => Course)
   course!: Rel<Course>;
-
   @OneToMany(() => Unit, (unit) => unit.level)
   units? = new Collection<Unit>(this);
 }

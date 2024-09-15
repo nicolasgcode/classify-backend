@@ -5,17 +5,12 @@ import { File } from './file.entity.js';
 
 @Entity()
 export class Unit extends BaseEntity {
-
   @Property({ nullable: false })
   name!: string;
-
   @Property({ nullable: false })
   number!: number;
-
   @ManyToOne( () => Level, {nullable: false })
   level!: Rel<Level>;
-
-
   @OneToMany( () => File,
   (file) => file.unit,
   {
