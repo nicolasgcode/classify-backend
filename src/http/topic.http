@@ -7,7 +7,7 @@ POST http://localhost:3000/api/topics
 Content-Type: application/json 
 
 {
-  "description": "Topic 4"
+  "description": "Topic 1"
 }
 
 ### ID
@@ -20,8 +20,7 @@ PUT http://localhost:3000/api/topics/{{id}}
 Content-Type: application/json
 
 {
-  "id": "1",
-  "description": "Topic 3"
+  "description": "Topic 1 actualizado"
 }
 
 ### Post a topic

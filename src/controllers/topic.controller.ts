@@ -10,12 +10,9 @@ function sanitizeTopicInput(req: Request, res: Response, next: NextFunction) {
   // Middleware
   //more checks here (content, type)
   
-  try {
-    if (description !== undefined) {
-      req.body.sanitizedInput.description = description.toString();
-    }
-  } catch (error) {
-    return res.status(400).send({ message: 'Invalid description' });
+  if (typeof description !== 'string') {
+    res.status(400).json({ message: 'Invalid input' });
+    return;
   }
   req.body.sanitizedInput = {
     description: req.body.description,
