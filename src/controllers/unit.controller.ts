@@ -6,7 +6,6 @@ const em = orm.em;
 
 function sanitizeUnitInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    id: req.body.id,
     name: req.body.name,
     number: req.body.number,
   };

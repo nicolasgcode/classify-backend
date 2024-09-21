@@ -16,12 +16,12 @@ function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
   }
   try {
     if (price !== undefined) {
-      req.body.price = parseInt(price);
+      req.body.price = parseFloat(price);
     }
   } catch (error) {
     return res.status(400).send({ message: 'Invalid price' });
   }
-  try {
+  /* try {
     for (let topic of topics) {
       if (topic !== Number) {
         topic = parseInt(topic);
@@ -30,7 +30,7 @@ function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
     req.body.topics = topics;
   }catch (error) {
     return res.status(400).send({ message: 'Invalid topics' });
-  } 
+  }  */
 
   // Creación de objeto con propiedades válidas
   req.body.sanitizedInput = {

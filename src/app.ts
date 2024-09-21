@@ -13,7 +13,7 @@ import { topicRouter } from './routes/topic.routes.js';
 import { levelRouter } from './routes/level.routes.js';
 import { memberRouter } from './routes/member.routes.js';
 import { adminRouter } from './routes/admin.routes.js';
-
+import { unitRouter } from  './routes/unit.routes.js'; 
 dotenv.config();
 
 const app = express();
@@ -48,6 +48,7 @@ app.use('/api/levels', levelRouter);
 app.use('/api/courses', courseRouter);
 app.use('/api/course/purchaseRecords', coursePurchaseRecordRouter);
 app.use('/api/topics', topicRouter);
+app.use('/api/unities', unitRouter);
 
 app.use((_, res) => {
   res.status(404).send({ message: 'Resource not found' });
