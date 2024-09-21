@@ -5,15 +5,15 @@ import cors from 'cors';
 import { orm, syncSchema } from './shared/orm.js';
 import { RequestContext } from '@mikro-orm/core';
 
-import { subscriptionRouter } from './routes/subscription.routes.js';
-import { subsPurchaseRecordRouter } from './routes/subsPurchaseRecord.routes.js';
-import { courseRouter } from './routes/course.routes.js';
-import { coursePurchaseRecordRouter } from './routes/coursePurchaseRecord.routes.js';
-import { topicRouter } from './routes/topic.routes.js';
-import { levelRouter } from './routes/level.routes.js';
-import { memberRouter } from './routes/member.routes.js';
-import { adminRouter } from './routes/admin.routes.js';
-import { unitRouter } from  './routes/unit.routes.js'; 
+import { subscriptionRouter } from '././entities/subscription/subscription.routes.js';
+import { subsPurchaseRecordRouter } from './entities/subsPurchaseRecord/subsPurchaseRecord.routes.js';
+import { courseRouter } from '././entities/course/course.routes.js'; 
+import { coursePurchaseRecordRouter } from '././entities/coursePurchaseRecord/coursePurchaseRecord.routes.js';
+import { topicRouter } from '././entities/topic/topic.routes.js';
+import { levelRouter } from './entities/level/level.routes.js';
+import { memberRouter } from './entities/user/member/member.routes.js';
+import { adminRouter } from './entities/user/admin/admin.routes.js';
+import { unitRouter } from  './entities/unit/unit.routes.js'; 
 dotenv.config();
 
 const app = express();
