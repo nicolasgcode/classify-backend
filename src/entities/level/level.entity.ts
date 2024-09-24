@@ -5,10 +5,10 @@ import {
   Collection,
   OneToMany,
   Rel,
-} from '@mikro-orm/core';
-import { BaseEntity } from '../../shared/baseEntity.entity.js';
-import { Course } from './../course/course.entity.js';
-import { Unit } from '../unit/unit.entity.js';
+} from "@mikro-orm/core";
+import { BaseEntity } from "../../shared/baseEntity.entity.js";
+import { Course } from "./../course/course.entity.js";
+import { Unit } from "../unit/unit.entity.js";
 
 @Entity()
 export class Level extends BaseEntity {
@@ -19,4 +19,3 @@ export class Level extends BaseEntity {
   @OneToMany(() => Unit, (unit) => unit.level)
   units? = new Collection<Unit>(this);
 }
- 

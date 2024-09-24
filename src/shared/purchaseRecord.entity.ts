@@ -4,8 +4,8 @@ import {
   DateTimeType,
   ManyToOne,
   Rel,
-} from '@mikro-orm/core';
-import { BaseEntity } from '../shared/baseEntity.entity.js';
+} from "@mikro-orm/core";
+import { BaseEntity } from "../shared/baseEntity.entity.js";
 //import { Member } from './../entities/member.entity.js';
 @Entity()
 export abstract class PurchaseRecord extends BaseEntity {

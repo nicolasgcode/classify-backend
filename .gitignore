@@ -31,4 +31,6 @@ dist/**/*
 ## built vscode extensions
 *.vsix
 
+#
+.prettierrc.json
 

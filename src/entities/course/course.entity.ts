@@ -8,11 +8,11 @@ import {
   ManyToMany,
   Rel,
   ManyToOne,
-} from '@mikro-orm/core';
-import { BaseEntity } from './../../shared/baseEntity.entity.js';
-import { CoursePurchaseRecord } from './../coursePurchaseRecord/coursePurchaseRecord.entity.js';
-import { Topic } from './../topic/topic.entity.js';
-import { Level } from './../level/level.entity.js';
+} from "@mikro-orm/core";
+import { BaseEntity } from "./../../shared/baseEntity.entity.js";
+import { CoursePurchaseRecord } from "./../coursePurchaseRecord/coursePurchaseRecord.entity.js";
+import { Topic } from "./../topic/topic.entity.js";
+import { Level } from "./../level/level.entity.js";
 @Entity()
 export class Course extends BaseEntity {
   @Property({ nullable: false, unique: true })
@@ -35,12 +35,9 @@ export class Course extends BaseEntity {
     owner: true,
   })
   topics = new Collection<Topic>(this);
-  @OneToMany(() => Level, (level) => level.course,
-    {
-      cascade: [Cascade.ALL],
-      nullable: true,
-    }
-)
+  @OneToMany(() => Level, (level) => level.course, {
+    cascade: [Cascade.ALL],
+    nullable: true,
+  })
   levels? = new Collection<Level>(this);
 }
-

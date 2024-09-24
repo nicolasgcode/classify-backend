@@ -1,6 +1,6 @@
-import { Entity, ManyToOne, Property, Rel } from '@mikro-orm/core';
-import { BaseEntity } from './../../shared/baseEntity.entity.js';
-import { Unit } from '../unit/unit.entity.js';
+import { Entity, ManyToOne, Property, Rel } from "@mikro-orm/core";
+import { BaseEntity } from "./../../shared/baseEntity.entity.js";
+import { Unit } from "../unit/unit.entity.js";
 
 @Entity()
 export class File extends BaseEntity {
@@ -8,6 +8,6 @@ export class File extends BaseEntity {
   name!: string;
   @Property({ nullable: false })
   type!: string;
-  @ManyToOne(() => Unit, {nullable: false })
+  @ManyToOne(() => Unit, { nullable: false })
   unit!: Rel<Unit>;
 }

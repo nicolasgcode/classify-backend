@@ -4,9 +4,9 @@ import {
   OneToMany,
   Property,
   Collection,
-} from '@mikro-orm/core';
-import { BaseEntity } from '../../shared/baseEntity.entity.js';
-import { SubsPurchaseRecord } from '../subsPurchaseRecord/subsPurchaseRecord.entity.js';
+} from "@mikro-orm/core";
+import { BaseEntity } from "../../shared/baseEntity.entity.js";
+import { SubsPurchaseRecord } from "../subsPurchaseRecord/subsPurchaseRecord.entity.js";
 @Entity()
 export class Subscription extends BaseEntity {
   @Property({ nullable: false, unique: true })

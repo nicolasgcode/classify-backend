@@ -1,11 +1,7 @@
-import {
-  Entity,
-  ManyToOne,
-  Rel,
-} from '@mikro-orm/core';
-import { PurchaseRecord } from '../../shared/purchaseRecord.entity.js';
-import { Course } from './../course/course.entity.js';
-import { Member } from './../user/member/member.entity.js';
+import { Entity, ManyToOne, Rel } from "@mikro-orm/core";
+import { PurchaseRecord } from "../../shared/purchaseRecord.entity.js";
+import { Course } from "./../course/course.entity.js";
+import { Member } from "./../user/member/member.entity.js";
 
 @Entity()
 export class CoursePurchaseRecord extends PurchaseRecord {
