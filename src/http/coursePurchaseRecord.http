@@ -1,0 +1,59 @@
+### get all purchaseRecords
+GET http://localhost:3000/api/courses/purchaseRecords
+
+### create new purchaseRecord
+# @name createPurchaseRecord
+POST http://localhost:3000/api/courses/purchaseRecords
+Content-Type: application/json 
+
+{
+  "totalAmount": 3000,
+  "user": 1,
+  "course": 1
+}
+###ID
+@id = {{createPurchaseRecord.response.body.data.id}} 
+### get purchaseRecord by id
+GET http://localhost:3000/api/courses/purchaseRecords/{{id}}
+
+### Edit/modify purchaseRecord (PUT - recurso completo/objeto con estado final)
+PUT http://localhost:3000/api/courses/purchaseRecords/{{id}}
+Content-Type: application/json
+
+{
+  "montoTotal": 7000,
+  "user": 1,
+  "course": 1
+}
+
+### Post a purchaseRecord
+# @name createPurchaseRecordToDelete
+POST http://localhost:3000/api/courses/purchaseRecords
+Content-Type: application/json 
+
+{
+  "montoTotal": 2000,
+  "course": 2
+}
+
+@idToDelete = {{createPurchaseRecordToDelete.response.body.data.id}}
+### delete purchaseRecord
+DELETE http://localhost:3000/api/courses/purchaseRecords/{{idToDelete}}
+
+
+
+
+
+
+
+
+### Edit/modify purchaseRecord (PATCH - Modificaciones parciales/modificaciones incrementales)
+PATCH http://localhost:3000/api/courses/purchaseRecords/1
+Content-Type: application/json
+
+{
+  "description": "PurchaseRecord 4"
+}
+
+### delete purchaseRecord
+DELETE http://localhost:3000/api/courses/purchaseRecords/1

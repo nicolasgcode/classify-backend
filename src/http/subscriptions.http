@@ -1,0 +1,57 @@
+### get all subscriptions
+GET http://localhost:3000/api/subscriptions
+### create new subscription
+
+# @name createSubscription
+POST http://localhost:3000/api/subscriptions
+Content-Type: application/json 
+
+{
+  "description": "1 mes",
+  "duration": "30",
+  "price": "300"
+}
+
+### ID
+@id = {{createSubscription.response.body.data.id}}
+
+### get subscription by id
+GET http://localhost:3000/api/subscriptions/{{id}}
+
+### Edit/modify subscription (PUT - recurso completo/objeto con estado final)
+PUT http://localhost:3000/api/subscriptions/{{id}}
+Content-Type: application/json
+
+{
+  "description": "2 meses",
+  "duration": "60",
+  "price": "3"
+}
+
+### POST a subscription
+# @name createSubscriptionToDelete
+POST http://localhost:3000/api/subscriptions
+Content-Type: application/json 
+
+{
+  "description": "3 meses",
+  "duration": "90",
+  "price": "800",
+  "purchaseRecords": []
+}
+
+###
+@idToDelete = {{createSubscriptionToDelete.response.body.data.id}}
+### delete subscription
+DELETE http://localhost:3000/api/subscriptions/{{idToDelete}}
+
+
+### Edit/modify subscription (PATCH - Modificaciones parciales/modificaciones incrementales)
+PATCH http://localhost:3000/api/subscriptions/{{idToDelete}}
+Content-Type: application/json
+
+{
+  //"dateStart": "2024-06-17",
+  "price": "8"
+}
+

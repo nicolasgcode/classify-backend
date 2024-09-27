@@ -1,35 +1,30 @@
 import 'reflect-metadata';
 import express from 'express';
 import dotenv from 'dotenv';
-import cors from 'cors';
 import { orm, syncSchema } from './shared/orm.js';
+import { subscriptionRouter } from './routes/subscription.routes.js';
+import { subsPurchaseRecordRouter } from './routes/subsPurchaseRecord.routes.js';
+import { courseRouter } from './routes/course.routes.js';
+import { coursePurchaseRecordRouter } from './routes/coursePurchaseRecord.routes.js';
+import { topicRouter } from './routes/topic.routes.js';
 import { RequestContext } from '@mikro-orm/core';
+import { memberRouter } from './routes/member.routes.js';
+import authRoutes from './routes/auth.routes.js';
 
-import { subscriptionRouter } from '././entities/subscription/subscription.routes.js';
-import { subsPurchaseRecordRouter } from './entities/subsPurchaseRecord/subsPurchaseRecord.routes.js';
-import { courseRouter } from '././entities/course/course.routes.js'; 
-import { coursePurchaseRecordRouter } from '././entities/coursePurchaseRecord/coursePurchaseRecord.routes.js';
-import { topicRouter } from '././entities/topic/topic.routes.js';
-import { levelRouter } from './entities/level/level.routes.js';
-import { memberRouter } from './entities/user/member/member.routes.js';
-import { adminRouter } from './entities/user/admin/admin.routes.js';
-import { unitRouter } from  './entities/unit/unit.routes.js'; 
+import cors from 'cors';
+import { levelRouter } from './routes/level.routes.js';
+import { fileRouter } from './routes/file.routes.js';
+import { unitRouter } from './routes/unit.routes.js';
+
 dotenv.config();
 
 const app = express();
 
 const PORT = 3000; //process.env.PORT;
 
-//configurarlo con el puerto que usa el frotend
-//para activarlo hay que ir en la terminal a "PORTS" y poner add port y elegir el puerto donde se ejecuta el back
-// y poner click derecho en Visibility y poner public
-// o mirar https://www.youtube.com/shorts/QGl_DnUDB4w
-app.use(cors({
-  origin: 'http://localhost:5173', // Permitir solicitudes solo desde tu aplicación frontend
-}));
-
 // luego de los middlewares base
 
+app.use(cors());
 
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
@@ -41,14 +36,17 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 app.use('/api/subscriptions', subscriptionRouter);
+app.use(authRoutes);
 app.use('/api/subscriptions/purchaseRecords', subsPurchaseRecordRouter);
+
 app.use('/api/members', memberRouter);
-app.use('/api/admins', adminRouter);
 app.use('/api/levels', levelRouter);
+app.use('/api/files', fileRouter);
+app.use('/api/units', unitRouter);
+
 app.use('/api/courses', courseRouter);
-app.use('/api/course/purchaseRecords', coursePurchaseRecordRouter);
+app.use('/api/courses/purchaseRecords', coursePurchaseRecordRouter);
 app.use('/api/topics', topicRouter);
-app.use('/api/unities', unitRouter);
 
 app.use((_, res) => {
   res.status(404).send({ message: 'Resource not found' });
