@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { SubsPurchaseRecord } from '../entities/subsPurchaseRecord.entity.js';
 import { orm } from '../shared/orm.js';
 import { subsPurchaseSchema } from '../schemas/subsPurchase.schema.js';
+import { ZodError } from 'zod';
 
 const em = orm.em;
 
@@ -33,6 +34,11 @@ async function add(req: Request, res: Response) {
       data: subsPurchaseRecord,
     });
   } catch (error: any) {
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
     res.status(500).json({ message: error.message });
   }
 }

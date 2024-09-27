@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  sanitizeTopicInput,
+  sanitizedInput,
   findAll,
   findOne,
   add,
@@ -12,6 +12,6 @@ export const topicRouter = Router();
 
 topicRouter.get('/', findAll);
 topicRouter.get('/:id', findOne);
-topicRouter.post('/', add);
-topicRouter.put('/:id', update);
+topicRouter.post('/', sanitizedInput, add);
+topicRouter.put('/:id', sanitizedInput, update);
 topicRouter.delete('/:id', remove);

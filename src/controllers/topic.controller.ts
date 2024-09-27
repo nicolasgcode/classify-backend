@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { Topic } from '../entities/topic.entity.js';
 import { orm } from '../shared/orm.js';
+import { topicSchema } from '../schemas/topic.schema.js';
+import { ZodError } from 'zod';
 
 const em = orm.em;
 em.getRepository(Topic);
 
-function sanitizeTopicInput(req: Request, res: Response, next: NextFunction) {
+function sanitizedInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    //id: req.body.id,
     description: req.body.description,
   }; // Middleware
   //more checks here (content, type)
@@ -17,6 +18,22 @@ function sanitizeTopicInput(req: Request, res: Response, next: NextFunction) {
       delete req.body.sanitizedInput[key];
   }); // Remove undefined
   next();
+}
+
+async function add(req: Request, res: Response) {
+  try {
+    const parsedData = topicSchema.parse(req.body.sanitizedInput);
+    const topic = em.create(Topic, parsedData);
+    await em.flush();
+    res.status(201).json({ message: 'Topic created', data: topic });
+  } catch (error: any) {
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
+    res.status(500).send({ message: error.message });
+  }
 }
 
 async function findAll(req: Request, res: Response) {
@@ -33,16 +50,6 @@ async function findOne(req: Request, res: Response) {
     const id = Number.parseInt(req.params.id);
     const topic = await em.findOneOrFail(Topic, { id });
     res.status(200).json({ message: 'Finded topic', data: topic });
-  } catch (error: any) {
-    res.status(500).send({ message: error.message });
-  }
-}
-
-async function add(req: Request, res: Response) {
-  try {
-    const topic = em.create(Topic, req.body);
-    await em.flush();
-    res.status(201).json({ message: 'Topic created', data: topic });
   } catch (error: any) {
     res.status(500).send({ message: error.message });
   }
@@ -70,7 +77,7 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeTopicInput, findAll, findOne, add, update, remove };
+export { sanitizedInput, findAll, findOne, add, update, remove };
 
 // Make sure the file extension is correct and the file exists in the same directory
 
