@@ -1,0 +1,47 @@
+### get all topics
+GET http://localhost:3000/api/topics
+
+### POST new topic
+# @name createTopic
+POST http://localhost:3000/api/topics
+Content-Type: application/json 
+
+{
+  "description": "Topic"
+}
+
+### ID
+@id = {{createTopic.response.body.data.id}}
+### get topic by id
+GET http://localhost:3000/api/topics/{{id}}
+
+### Edit/modify topic (PUT - recurso completo/objeto con estado final)
+PUT http://localhost:3000/api/topics/{{id}}
+Content-Type: application/json
+
+{
+  "id": "1",
+  "description": "Topic 3"
+}
+
+### Post a topic
+# @name createTopicToDelete
+POST http://localhost:3000/api/topics
+Content-Type: application/json 
+
+{
+  "id": "2",
+  "description": "Topic 2"
+}
+
+@idToDelete = {{createTopicToDelete.response.body.data.id}}
+### delete topic
+DELETE http://localhost:3000/api/topics/{{idToDelete}}
+
+### Edit/modify topic (PATCH - Modificaciones parciales/modificaciones incrementales)
+PATCH http://localhost:3000/api/topics/{{idToDelete}}
+Content-Type: application/json
+
+{
+  "description": "Topic 4"
+}

@@ -1,0 +1,47 @@
+### get all topics
+GET http://localhost:3000/api/topics
+
+### POST new level
+# @name createLevel
+POST http://localhost:3000/api/topics
+Content-Type: application/json 
+
+{
+  "name": "Level"
+}
+
+### ID
+@id = {{createLevel.response.body.data.id}}
+### get level by id
+GET http://localhost:3000/api/topics/{{id}}
+
+### Edit/modify level (PUT - recurso completo/objeto con estado final)
+PUT http://localhost:3000/api/topics/{{id}}
+Content-Type: application/json
+
+{
+  "id": "1",
+  "name": "Level 3"
+}
+
+### Post a level
+# @name createLevelToDelete
+POST http://localhost:3000/api/topics
+Content-Type: application/json 
+
+{
+  "id": "2",
+  "name": "Level 2"
+}
+
+@idToDelete = {{createLevelToDelete.response.body.data.id}}
+### delete level
+DELETE http://localhost:3000/api/topics/{{idToDelete}}
+
+### Edit/modify level (PATCH - Modificaciones parciales/modificaciones incrementales)
+PATCH http://localhost:3000/api/topics/{{idToDelete}}
+Content-Type: application/json
+
+{
+  "name": "Level 4"
+}

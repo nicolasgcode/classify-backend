@@ -4,9 +4,6 @@ coverage
 # API keys and secrets
 .env
 
-# Ormo config file
-shared/orm.ts
-
 # dependency directory
 node_modules
 
@@ -31,6 +28,4 @@ dist/**/*
 ## built vscode extensions
 *.vsix
 
-#
-.prettierrc.json
 
