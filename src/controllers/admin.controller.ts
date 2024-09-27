@@ -44,19 +44,23 @@ async function findOne(req: Request, res: Response) {
 async function add(req: Request, res: Response) {
   try {
     const parsedData = registerSchema.parse(req.body.sanitizedInput);
+
+    // Verificar si el email ya existe
+    const existingAdmin = await em.findOne(Admin, { email: parsedData.email });
+    if (existingAdmin) {
+      return res.status(409).json({ message: 'Email ya está en uso' });
+    }
+
     const admin = em.create(Admin, parsedData);
     await em.flush();
-    res.status(201).json({ message: 'admin created', data: admin });
+    res.status(201).json({ message: 'admin creado', data: admin });
   } catch (error: any) {
     if (error instanceof ZodError) {
-      return res
-        .status(400)
-        .json(error.issues.map((issue) => ({ message: issue.message })));
+      return res.status(400).json(error.issues);
     }
     res.status(500).json({ message: error.message });
   }
 }
-
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);

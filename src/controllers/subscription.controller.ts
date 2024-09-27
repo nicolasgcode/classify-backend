@@ -35,12 +35,9 @@ async function add(req: Request, res: Response) {
       .json({ message: 'Subscription created', data: subscription });
   } catch (error: any) {
     if (error instanceof ZodError) {
-      return (
-        res
-          .status(400)
-          // .json(error.issues.map((issue) => ({ message: issue.message })));
-          .json(error.issues)
-      );
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
     }
     res.status(500).json({ message: error.message });
   }

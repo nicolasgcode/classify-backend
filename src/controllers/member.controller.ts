@@ -23,8 +23,16 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
 }
 
 async function add(req: Request, res: Response) {
+  console.log('hey there');
   try {
     const parsedData = registerSchema.parse(req.body.sanitizedInput);
+
+    const emailAlreadyInUse = await em.findOne(Member, {
+      email: parsedData.email,
+    });
+    if (emailAlreadyInUse) {
+      return res.status(409).json({ message: 'Email already in use' });
+    }
     const member = em.create(Member, parsedData);
     await em.flush();
     res.status(201).json({ message: 'member created', data: member });
