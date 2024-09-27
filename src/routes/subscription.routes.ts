@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  // sanitizeSubscriptionInput,
+  sanitizedInput,
   findAll,
   findOne,
   add,
@@ -12,6 +12,6 @@ export const subscriptionRouter = Router();
 
 subscriptionRouter.get('/', findAll);
 subscriptionRouter.get('/:id', findOne);
-subscriptionRouter.post('/', add);
-subscriptionRouter.put('/:id', update);
+subscriptionRouter.post('/', sanitizedInput, add);
+subscriptionRouter.put('/:id', sanitizedInput, update);
 subscriptionRouter.delete('/:id', remove);

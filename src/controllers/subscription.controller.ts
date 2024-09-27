@@ -26,6 +26,8 @@ function sanitizedInput(req: Request, res: Response, next: NextFunction) {
 async function add(req: Request, res: Response) {
   try {
     const parsedData = subscriptionSchema.parse(req.body.sanitizedInput);
+    console.log(req.body);
+    console.log(parsedData);
     const subscription = em.create(Subscription, parsedData);
     await em.flush();
     res
