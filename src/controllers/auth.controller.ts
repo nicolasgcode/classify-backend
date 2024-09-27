@@ -18,9 +18,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Email not found' });
     }
 
-    // Aquí debes comparar la contraseña. Asumiendo que tienes un método para hacerlo
     const isPasswordMatched = existingUser?.password === password;
-    // Implementa esta función según tu lógica
     if (!isPasswordMatched) {
       return res.status(401).json({ message: 'Wrong password' });
     }
