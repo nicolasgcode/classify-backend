@@ -7,6 +7,8 @@ import { orm } from '../shared/orm.js';
 
 import jwt from 'jsonwebtoken';
 
+import bcrypt from 'bcrypt';
+
 const em = orm.em;
 
 export const login = async (req: Request, res: Response) => {
@@ -18,7 +20,10 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Email not found' });
     }
 
-    const isPasswordMatched = existingUser?.password === password;
+    const isPasswordMatched = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
     if (!isPasswordMatched) {
       return res.status(401).json({ message: 'Wrong password' });
     }

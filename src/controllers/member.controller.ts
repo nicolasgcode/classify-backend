@@ -4,6 +4,8 @@ import { orm } from '../shared/orm.js';
 import { registerSchema } from '../schemas/register.schema.js';
 import { ZodError } from 'zod';
 
+import bcrypt from 'bcrypt';
+
 const em = orm.em;
 
 function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
@@ -33,7 +35,11 @@ async function add(req: Request, res: Response) {
     if (emailAlreadyInUse) {
       return res.status(409).json({ message: 'Email already in use' });
     }
-    const member = em.create(Member, parsedData);
+    const hashedPassword = await bcrypt.hash(parsedData.password, 10);
+    const member = em.create(Member, {
+      ...parsedData,
+      password: hashedPassword,
+    });
     await em.flush();
     res.status(201).json({ message: 'member created', data: member });
   } catch (error: any) {
