@@ -4,6 +4,8 @@ import { orm } from '../shared/orm.js';
 import { registerSchema } from '../schemas/register.schema.js';
 import { ZodError } from 'zod';
 
+import { UserRole } from '../utils/UserRole.js';
+
 import bcrypt from 'bcrypt';
 
 const em = orm.em;
@@ -38,6 +40,7 @@ async function add(req: Request, res: Response) {
     const hashedPassword = await bcrypt.hash(parsedData.password, 10);
     const member = em.create(Member, {
       ...parsedData,
+      role: UserRole.MEMBER,
       password: hashedPassword,
     });
     await em.flush();

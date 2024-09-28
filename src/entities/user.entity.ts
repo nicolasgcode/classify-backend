@@ -1,5 +1,6 @@
 import { Entity, Property } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/baseEntity.entity.js';
+import { UserRole } from '../utils/UserRole.js';
 @Entity()
 export abstract class User extends BaseEntity {
   @Property({ unique: true })
@@ -10,6 +11,8 @@ export abstract class User extends BaseEntity {
 
   @Property({ nullable: false })
   surname!: string;
+  @Property({ nullable: true })
+  role?: UserRole;
 
   @Property({ nullable: false })
   email!: string;

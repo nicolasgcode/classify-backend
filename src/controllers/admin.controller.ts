@@ -3,6 +3,8 @@ import { Admin } from '../entities/admin.entity.js';
 import { orm } from '../shared/orm.js';
 import { ZodError } from 'zod';
 import { registerSchema } from '../schemas/register.schema.js';
+import bcrypt from 'bcrypt';
+import { UserRole } from '../utils/UserRole.js';
 
 const em = orm.em;
 
@@ -45,13 +47,17 @@ async function add(req: Request, res: Response) {
   try {
     const parsedData = registerSchema.parse(req.body.sanitizedInput);
 
-    // Verificar si el email ya existe
     const existingAdmin = await em.findOne(Admin, { email: parsedData.email });
     if (existingAdmin) {
       return res.status(409).json({ message: 'Email ya está en uso' });
     }
 
-    const admin = em.create(Admin, parsedData);
+    const hashedPassword = await bcrypt.hash(parsedData.password, 10);
+    const admin = em.create(Admin, {
+      ...parsedData,
+      role: UserRole.ADMIN,
+      password: hashedPassword,
+    });
     await em.flush();
     res.status(201).json({ message: 'admin creado', data: admin });
   } catch (error: any) {
