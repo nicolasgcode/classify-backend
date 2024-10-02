@@ -1,62 +1,37 @@
 import { Request, Response, NextFunction } from "express";
-import { Course } from "./course.entity.js";
-import { orm } from "../../shared/orm.js";
+import { Course } from "./../entities/course.entity.js";
+import { orm } from "./../shared/orm.js";
 import {
-  validarCourseSchema,
-  validarCourseToPatchSchema,
-  validarSearchByTitleSchema,
-} from "./course.schema.js";
+  validateCourse,
+  validateCourseToPatch,
+  validateSearchByTitle,
+} from "./../schemas/course.schema.js";
 
 const em = orm.em;
 em.getRepository(Course);
 function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
-  try {
-    // Validamos el cuerpo de la solicitud con Zod
-    req.body = validarCourseSchema(req.body);
-    next();
-  } catch (error) {
-    return res
-      .status(400)
-      .send({ message: "Invalid course input", error: error });
-  }
-}
-
-// Middleware para validar datos de actualización de curso
-function sanitizeCourseToPatchInput(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    // Validamos los campos de la solicitud para actualizar con Zod
-    req.body = validarCourseToPatchSchema(req.body);
-    next();
-  } catch (error) {
-    return res
-      .status(400)
-      .send({ message: "Invalid course patch input", error: error});
-  }
-}
-
-function sanitizeSearchInput(req: Request, res: Response, next: NextFunction) {
-  try {
-    req.query = validarSearchByTitleSchema(req.query);
-    next();
-  } catch (error) {
-    return res
-      .status(400)
-      .send({ message: "Invalid search input", error: error });
-  }
+  req.body.sanitizedInput = {
+    id: req.body.id,
+    createAt: req.body.createAt,
+    title: req.body.title,
+    price: req.body.price,
+    topics: req.body.topics,
+    levels: req.body.levels,
+  };
+  Object.keys(req.body.sanitizedInput).forEach((key) => {
+    if (req.body.sanitizedInput[key] === undefined) {
+      delete req.body.sanitizedInput[key];
+    }
+  });
+  next();
 }
 
 async function findAll(req: Request, res: Response) {
   try {
-    const courses = await em.find(
-      Course,
-      {},
-      { populate: ["topics", "levels"] }
+    const courses = validateCourse(
+      await em.find(Course, {}, { populate: ["topics", "levels"] })
     );
-    res.json({ message: "found all courses", data: courses });
+    res.status(200).json({ message: "found all courses", data: courses });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -78,7 +53,8 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const course = em.create(Course, req.body);
+    const validCourse = validateCourse(req.body);
+    const course = em.create(Course, validCourse);
     await em.flush();
     res.status(201).json({ message: "Course created", data: course });
   } catch (error: any) {
@@ -90,7 +66,13 @@ async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const course = em.getReference(Course, id);
-    em.assign(course, req.body);
+    let courseUpdated
+    if (req.method === "PATCH") {
+      courseUpdated = validateCourseToPatch(req.body.sanitizedInput);
+    } else {
+      courseUpdated = validateCourse(req.body.sanitizedInput);
+    }
+    em.assign(course, courseUpdated);
     await em.flush();
     res.status(200).json({ message: "Course updated", data: course });
   } catch (error: any) {
@@ -137,7 +119,5 @@ export {
   update,
   remove,
   findBytitle,
-  sanitizeCourseInput,
-  sanitizeCourseToPatchInput,
-  sanitizeSearchInput,
+  sanitizeCourseInput
 };

@@ -6,7 +6,7 @@ import {
   add,
   update,
   remove,
-} from '../controllers/admin.controller.js';
+} from './../controllers/admin.controller.js';
 export const adminRouter = Router();
 
 adminRouter.get('/', findAll);

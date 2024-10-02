@@ -1,29 +1,29 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const levelSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  course: z.number().int().positive().min(1, 'Course is required'),
-});
-export type Level = z.infer<typeof levelSchema>;
-
-export function validarLevelSchema(object:any) {
-    try {
-        return  levelSchema.parse(object);
-    } catch (error:any) {  
-        throw error
-    }
-}
-
-export const levelToPatchSchema = z.object({
-  name: z.string().opcional(),
-  course: z.number().int().positive().min(1, 'Course is required').opcional(),
+  name: z.string().min(1, "Name is required"),
+  course: z.number().int().positive().min(1, "Course is required"),
+  units: z.array(z.number()).optional(),
 });
 
-function validarLevelToPatchSchema(object:any) {
-    try {
-        return  levelToPatchSchema.parse(object);
-    } catch (error:any) {  
-        throw error
-    }
+export function validarLevel(object: any) {
+  try {
+    return levelSchema.parse(object);
+  } catch (error: any) {
+    throw error;
+  }
 }
-export type levelToPatch = z.infer<typeof levelToPatchSchema>;
+
+export const levelToPatch = z.object({
+  name: z.string().optional(),
+  course: z.number().int().positive().min(1, "Course is required").optional(),
+  units: z.array(z.number()).optional(),
+});
+
+export function validarLevelToPatch(object: any) {
+  try {
+    return levelToPatch.parse(object);
+  } catch (error: any) {
+    throw error;
+  }
+}
