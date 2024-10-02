@@ -6,17 +6,17 @@ import {
   validateCourseToPatch,
   validateSearchByTitle,
 } from "./../schemas/course.schema.js";
+import { Topic } from "../entities/topic.entity.js";
+import { Level } from "../entities/level.entity.js";
+import { CoursePurchaseRecord } from "../entities/coursePurchaseRecord.entity.js";
 
 const em = orm.em;
 em.getRepository(Course);
 function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    id: req.body.id,
-    createAt: req.body.createAt,
     title: req.body.title,
-    price: req.body.price,
+    price: Number(req.body.price),
     topics: req.body.topics,
-    levels: req.body.levels,
   };
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
@@ -26,12 +26,34 @@ function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
+function sanitizeSearchInput(req: Request) {
+  const queryResult: any = {
+    title: req.query.title,
+  };
+
+  // Eliminar keys indefinidos y sanitizar el título
+  Object.keys(queryResult).forEach((key) => {
+    if (queryResult[key] === undefined) {
+      delete queryResult[key];
+    } else if (key === "title") {
+      queryResult[key] = { $like: `%${queryResult[key].trim()}%` }; // Sanitizar y preparar para consulta
+    }
+  });
+
+  return queryResult;
+}
+
 async function findAll(req: Request, res: Response) {
   try {
-    const courses = validateCourse(
-      await em.find(Course, {}, { populate: ["topics", "levels"] })
+    const sanitizedQuery = sanitizeSearchInput(req);
+
+    const courses = await em.find(
+      Course,
+      sanitizedQuery, // Pasa sanitizedQuery directamente
+      { populate: ["topics", "levels"] }
     );
-    res.status(200).json({ message: "found all courses", data: courses });
+
+    res.status(200).json({ message: "Found all courses", data: courses });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -53,8 +75,8 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const validCourse = validateCourse(req.body);
-    const course = em.create(Course, validCourse);
+    const validCourse = validateCourse(req.body.sanitizedInput);
+    const course = em.create(Course, { ...validCourse, createdAt: new Date() });
     await em.flush();
     res.status(201).json({ message: "Course created", data: course });
   } catch (error: any) {
@@ -66,7 +88,7 @@ async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const course = em.getReference(Course, id);
-    let courseUpdated
+    let courseUpdated;
     if (req.method === "PATCH") {
       courseUpdated = validateCourseToPatch(req.body.sanitizedInput);
     } else {
@@ -91,33 +113,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-async function findBytitle(req: Request, res: Response) {
-  try {
-    const title = req.query.title as string;
-    const courses = await em.find(
-      Course,
-      { title: { $like: `%${title}%` } },
-      { populate: ["topics", "levels"] }
-    );
-
-    if (courses.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No courses found with the given title" });
-    }
-
-    res.json({ message: "Found courses", data: courses });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
-export {
-  findAll,
-  findOne,
-  add,
-  update,
-  remove,
-  findBytitle,
-  sanitizeCourseInput
-};
+export { findAll, findOne, add, update, remove, sanitizeCourseInput };

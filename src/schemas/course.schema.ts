@@ -1,25 +1,19 @@
 import { z } from "zod";
 
 const courseSchema = z.object({
-  id: z.number().int().positive().optional(),
-  createAt: z.date().optional(),
   title: z.string().min(1, "Title is required"),
   price: z.number().min(1, "Price is required"),
   topics: z.array(z.number()).min(1, "At least one topic is required"),
-  levels: z.array(z.number()).optional(),
 });
 
 const courseToPatchSchema = z.object({
-  id: z.number().int().positive().optional(),
-  createAt: z.date().optional(),
   title: z.string().optional(),
   price: z.number().optional(),
   topics: z.array(z.number()).optional(),
-  levels: z.array(z.number()).optional(),
 });
 
 const searchByTitleSchema = z.object({
-  title: z.string().min(1, "Title is required"),
+  title: z.string().nonempty("Title is required"),
 });
 
 function validateCourse(object: any) {
