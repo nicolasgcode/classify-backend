@@ -1,12 +1,12 @@
-import { MikroORM } from '@mikro-orm/mysql';
-import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
+import { MikroORM } from "@mikro-orm/mysql";
+import { SqlHighlighter } from "@mikro-orm/sql-highlighter";
 
 export const orm = await MikroORM.init({
-  entities: ['./dist/**/*.entity.js'],
-  entitiesTs: ['./src/**/*.entity.ts'],
-  dbName: 'tp-dsw',
+  entities: ["./dist/entities/*.entity.js"],
+  entitiesTs: ["./src/entities/*.entity.ts"],
+  dbName: "tp-dsw",
   // Change 'type' to 'dbType'
-  clientUrl: 'mysql://root@localhost:3306/tp-dsw',
+  clientUrl: "mysql://root:root@localhost:3306/tp-dsw", //"mysql://root:{contraseña}@localhost:{puerto}/tp-dsw"
 
   highlighter: new SqlHighlighter(),
   debug: true,
@@ -20,9 +20,9 @@ export const orm = await MikroORM.init({
 
 export const syncSchema = async () => {
   const generator = orm.getSchemaGenerator();
-  /*
-        await generator.dropSchema();
-        await generator.createSchema();
-        */
+  if (false) {
+    await generator.dropSchema();
+    await generator.createSchema();
+  }
   await generator.updateSchema();
 };
