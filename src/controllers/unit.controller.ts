@@ -1,15 +1,16 @@
-import { Request, Response, NextFunction } from 'express';
-import { Unit } from '../entities/unit.entity.js';
-import { orm } from '../shared/orm.js';
-import { unitSchema } from '../schemas/unit.schema.js';
-import { ZodError } from 'zod';
+import { Request, Response, NextFunction } from "express";
+import { Unit } from "../entities/unit.entity.js";
+import { orm } from "../shared/orm.js";
+import { validateUnit, validarUnitToPatch } from "../schemas/unit.schema.js";
+import { ZodError } from "zod";
+import { EntityManager } from "@mikro-orm/core";
 
-const em = orm.em;
+const em: EntityManager = orm.em.fork();
+em.getRepository(Unit);
 
 function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     name: req.body.name,
-    number: req.body.number,
     level: req.body.level,
   };
 
@@ -20,12 +21,33 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
+async function findAll(req: Request, res: Response) {
+  try {
+    const units = await em.find(Unit, {});
+    res.status(200).json({ message: "found all units", data: units });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function findOne(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id);
+    const unit = await em.findOneOrFail(Unit, { id }, { populate: ["level"] });
+    res.status(200).json({ message: "found unit", data: unit });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
 async function add(req: Request, res: Response) {
   try {
-    const parsedData = unitSchema.parse(req.body.sanitizedInput);
-    const unit = em.create(Unit, parsedData);
+    const validUnit = validateUnit(req.body.sanitizedInput);
+    const levelId = validUnit.level;
+    const order = await em.count(Unit, { level: levelId });
+    const unit = em.create(Unit, { ...validUnit, order: order + 1 });
     await em.flush();
-    res.status(201).json({ message: 'unit added', data: unit });
+    const createdUnit = em.getReference(Unit, unit.id);
+    res.status(201).json({ message: "unit created", data: createdUnit });
   } catch (error: any) {
     if (error instanceof ZodError) {
       return res
@@ -35,46 +57,41 @@ async function add(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
-
-async function findAll(req: Request, res: Response) {
-  try {
-    const units = await em.find(Unit, {});
-    res.status(200).json({ message: 'found all units', data: units });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
-async function findOne(req: Request, res: Response) {
-  try {
-    const id = Number.parseInt(req.params.id);
-    const unit = await em.findOneOrFail(Unit, { id });
-    res.status(200).json({ message: 'found unit', data: unit });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const unitToUpdate = await em.findOneOrFail(Unit, { id });
     em.assign(unitToUpdate, req.body.sanitizedInput);
     await em.flush();
-    res.status(200).json({ message: 'unit updated', data: unitToUpdate });
+    res.status(200).json({ message: "unit updated", data: unitToUpdate });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
 
 async function remove(req: Request, res: Response) {
-  try {
-    const id = Number.parseInt(req.params.id);
-    const unit = em.getReference(Unit, id);
-    await em.removeAndFlush(unit);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
+  await em.transactional(async (em) => {
+    try {
+      const id = Number.parseInt(req.params.id);
+      const unit = await em.findOneOrFail(Unit, { id });
+      const level = unit.level;
+      const order = unit.order;
+      await em.removeAndFlush(unit);
+      const unitsToUpdate = await em.find(Unit, {
+        level: level.id,
+        order: { $gt: order },
+      });
+      for (const u of unitsToUpdate) {
+        u.order -= 1;
+        em.persist(u);
+      }
+
+      await em.flush();
+      res.status(204).send();
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
 }
 
 export { sanitizeUserInput, findAll, findOne, add, update, remove };

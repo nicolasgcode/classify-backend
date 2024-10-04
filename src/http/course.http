@@ -9,7 +9,7 @@ POST http://localhost:3000/api/courses
 Content-Type: application/json 
 
 {
-  "title": "titletest",
+  "title": "titletesdt3",
   "price": "302",
   "topics": [1]
 }

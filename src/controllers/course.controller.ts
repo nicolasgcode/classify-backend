@@ -6,10 +6,7 @@ import {
   validateCourseToPatch,
   validateSearchByTitle,
 } from "./../schemas/course.schema.js";
-import { Topic } from "../entities/topic.entity.js";
-import { Level } from "../entities/level.entity.js";
-import { CoursePurchaseRecord } from "../entities/coursePurchaseRecord.entity.js";
-
+import { ZodError } from "zod";
 const em = orm.em;
 em.getRepository(Course);
 function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
@@ -78,9 +75,16 @@ async function add(req: Request, res: Response) {
     const validCourse = validateCourse(req.body.sanitizedInput);
     const course = em.create(Course, { ...validCourse, createdAt: new Date() });
     await em.flush();
-    res.status(201).json({ message: "Course created", data: course });
+    const courseCreated = em.getReference(Course, course.id);
+    res.status(201)
+      .json({ message: "Course created", data: { courseCreated } });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
+    res.status(500).send({ message: error.message });
   }
 }
 
