@@ -38,6 +38,9 @@ async function findOne(req: Request, res: Response) {
       { id },
       { populate: ["units", "course"] }
     );
+    if (level.units) {
+      level.units.getItems().sort((a, b) => a.order - b.order);
+    }
     res.status(200).json({ message: "found level", data: level });
   } catch (error: any) {
     res.status(500).send({ message: error.message });

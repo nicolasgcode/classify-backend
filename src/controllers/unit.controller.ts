@@ -8,12 +8,11 @@ import { EntityManager } from "@mikro-orm/core";
 const em: EntityManager = orm.em.fork();
 em.getRepository(Unit);
 
-function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
+function sanitizeUnitInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     name: req.body.name,
     level: req.body.level,
   };
-
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined)
       delete req.body.sanitizedInput[key];
@@ -94,4 +93,4 @@ async function remove(req: Request, res: Response) {
   });
 }
 
-export { sanitizeUserInput, findAll, findOne, add, update, remove };
+export { sanitizeUnitInput, findAll, findOne, add, update, remove };
