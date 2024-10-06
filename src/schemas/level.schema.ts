@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const levelSchema = z.object({
+const levelSchema = z.object({
   name: z
     .string()
     .min(1, "Name is required")
@@ -24,7 +24,7 @@ export function validateLevel(object: any) {
   }
 }
 
-export const levelToPatch = z.object({
+const levelToPatch = z.object({
   name: z
     .string()
     .max(20, "Name must not exceed 100 characters")
