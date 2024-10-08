@@ -15,6 +15,9 @@ import { Topic } from "./topic.entity.js";
 import { Level } from "./level.entity.js";
 @Entity()
 export class Course extends BaseEntity {
+  @Property({ nullable: false })
+  isActive!: boolean;
+  
   @Property({ nullable: false, unique: true })
   title!: string;
   /* 

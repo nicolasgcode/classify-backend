@@ -15,6 +15,12 @@ export class Level extends BaseEntity {
   @Property({ nullable: false, unique: true })
   name!: string;
 
+  @Property({ nullable: false, type: "text" })
+  description!: string;
+
+  @Property({ nullable: false })
+  order!: number;
+  
   @ManyToOne(() => Course, { nullable: false })
   course!: Rel<Course>;
 

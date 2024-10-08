@@ -1,0 +1,48 @@
+### get all units
+GET http://localhost:3000/api/units
+
+### POST new unit
+# @name createUnit
+POST http://localhost:3000/api/units
+Content-Type: application/json 
+
+{
+  "name": "Unidad oncdse",
+  "level": 1
+}
+                             
+### ID
+@id = {{createUnit.response.body.data.id}}
+### get unit by id
+GET http://localhost:3000/api/units/1
+
+### Edit/modify unit (PUT - recurso completo/objeto con estado final)
+PUT http://localhost:3000/api/units/{{id}}
+Content-Type: application/json
+
+{
+  "id": "1",
+  "name": "Unit 3"
+}
+
+### Post a unit
+# @name createUnitToDelete
+POST http://localhost:3000/api/units
+Content-Type: application/json 
+
+{
+  "id": "2",
+  "name": "Unit 2"
+}
+
+@idToDelete = {{createUnitToDelete.response.body.data.id}}
+### delete unit
+DELETE http://localhost:3000/api/units/{{idToDelete}}
+
+### Edit/modify unit (PATCH - Modificaciones parciales/modificaciones incrementales)
+PATCH http://localhost:3000/api/units/{{idToDelete}}
+Content-Type: application/json
+
+{
+  "name": "Unit 4"
+}

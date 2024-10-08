@@ -1,11 +1,37 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-export const subscriptionSchema = z.object({
+const subscriptionSchema = z.object({
   description: z
-    .string({ message: 'Invalid description' })
-    .min(1, 'Description is required'),
+    .string({ message: "Invalid description" })
+    .min(1, "Description is required"),
   duration: z
-    .number({ message: 'Invalid duration' })
-    .min(1, 'Duration is required'),
-  price: z.number({ message: 'Invalid price' }).min(1, 'Price is required'),
+    .number({ message: "Invalid duration" })
+    .min(1, "Duration is required"),
+  price: z.number({ message: "Invalid price" }).min(1, "Price is required"),
 });
+
+export function validateSubscription(object: any) {
+  try {
+    return subscriptionSchema.parse(object);
+  } catch (error: any) {
+    throw error;
+  }
+}
+
+const subscriptionToPatch = z.object({
+  description: z
+    .string({ message: "Invalid description" })
+    .min(1, "Description is required"),
+  duration: z
+    .number({ message: "Invalid duration" })
+    .min(1, "Duration is required"),
+  price: z.number({ message: "Invalid price" }).min(1, "Price is required"),
+});
+
+export function validateSubscriptionToPatch(object: any) {
+  try {
+    return subscriptionToPatch.parse(object);
+  } catch (error: any) {
+    throw error;
+  }
+}
