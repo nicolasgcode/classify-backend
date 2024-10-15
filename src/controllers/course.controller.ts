@@ -44,7 +44,7 @@ async function add(req: Request, res: Response) {
 async function findAll(req: Request, res: Response) {
   try {
     const courses = await em.find(Course, {}, { populate: ['topics'] });
-    res.json({ message: 'found all courses', data: courses });
+    res.json({ message: 'found all courses', courses: courses });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

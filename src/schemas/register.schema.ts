@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-const UserRole = z.enum(['admin', 'member']);
-
 export const registerSchema = z.object({
   dni: z
     .number()

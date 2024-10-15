@@ -20,11 +20,16 @@ dotenv.config();
 
 const app = express();
 
-const PORT = 3000; //process.env.PORT;
+const PORT = process.env.PORT;
 
 // luego de los middlewares base
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  })
+);
 
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);

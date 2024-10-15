@@ -8,10 +8,12 @@ import {
   remove,
 } from '../controllers/course.controller.js';
 
+import { requireAuth } from '../middlewares/requireAuth.js';
+
 export const courseRouter = Router();
 
-courseRouter.get('/', findAll);
-courseRouter.get('/:id', findOne);
-courseRouter.post('/', sanitizeCourseInput, add);
-courseRouter.put('/:id', sanitizeCourseInput, update);
-courseRouter.delete('/:id', remove);
+courseRouter.get('/', requireAuth, findAll);
+courseRouter.get('/:id', requireAuth, findOne);
+courseRouter.post('/', requireAuth, sanitizeCourseInput, add);
+courseRouter.put('/:id', requireAuth, sanitizeCourseInput, update);
+courseRouter.delete('/:id', requireAuth, remove);

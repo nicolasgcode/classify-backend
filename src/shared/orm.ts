@@ -5,8 +5,7 @@ export const orm = await MikroORM.init({
   entities: ['./dist/**/*.entity.js'],
   entitiesTs: ['./src/**/*.entity.ts'],
   dbName: 'tp-dsw',
-  // Change 'type' to 'dbType'
-  clientUrl: 'mysql://root@localhost:3306/tp-dsw',
+  clientUrl: process.env.DB_URI,
 
   highlighter: new SqlHighlighter(),
   debug: true,
