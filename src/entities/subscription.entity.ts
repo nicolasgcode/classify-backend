@@ -19,8 +19,8 @@ export class Subscription extends BaseEntity {
   @Property({ nullable: false })
   duration!: number;
 
-  @Property({ type: DateTimeType, nullable: true })
-  startDate? = new Date();
+  /* @Property({ type: DateTimeType, nullable: true })
+  startDate? = new Date(); */
 
   @Property({ nullable: false })
   price!: number;

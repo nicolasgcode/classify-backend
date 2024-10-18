@@ -27,6 +27,7 @@ function sanitizedInput(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
+
 async function findAll(req: Request, res: Response) {
   try {
     const subscriptions = await em.find(Subscription, {});
@@ -52,7 +53,10 @@ async function findOne(req: Request, res: Response) {
 async function add(req: Request, res: Response) {
   try {
     const validSubscription = validateSubscription(req.body.sanitizedInput);
-    const subscription = em.create(Subscription, validSubscription);
+    const subscription = em.create(Subscription, {
+      ...validSubscription,
+      isActive: true,
+    });
     await em.flush();
     const subscriptionCreated = em.getReference(Subscription, subscription.id);
     res

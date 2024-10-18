@@ -74,7 +74,11 @@ async function findOne(req: Request, res: Response) {
 async function add(req: Request, res: Response) {
   try {
     const validCourse = validateCourse(req.body.sanitizedInput);
-    const course = em.create(Course, { ...validCourse, createdAt: new Date() });
+    const course = em.create(Course, {
+      ...validCourse,
+      createdAt: new Date(),
+      isActive: true,
+    });
     await em.flush();
     const courseCreated = em.getReference(Course, course.id);
     res

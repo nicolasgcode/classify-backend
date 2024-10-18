@@ -44,3 +44,7 @@ export function validarLevelToPatch(object: any) {
     throw error;
   }
 }
+const searchByOrderAndCourseSchema = z.object({
+  order: z.number().int().positive(),
+  course: z.number().int().positive(),
+});
