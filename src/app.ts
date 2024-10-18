@@ -8,8 +8,8 @@ import { courseRouter } from "./routes/course.routes.js";
 import { coursePurchaseRecordRouter } from "./routes/coursePurchaseRecord.routes.js";
 import { topicRouter } from "./routes/topic.routes.js";
 import { RequestContext } from "@mikro-orm/core";
-import { memberRouter } from "./routes/member.routes.js";
-//import authRoutes from './routes/auth.routes.js';
+import { userRouter } from "./routes/user.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
 import cors from "cors";
 import { levelRouter } from "./routes/level.routes.js";
@@ -36,10 +36,10 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 app.use("/api/subscriptions", subscriptionRouter);
-//app.use(authRoutes);
+app.use(authRoutes);
 app.use("/api/subsPurchaseRecords", subsPurchaseRecordRouter);
 
-app.use("/api/members", memberRouter);
+app.use("/api/users", userRouter);
 app.use("/api/levels", levelRouter);
 app.use("/api/files", fileRouter);
 app.use("/api/units", unitRouter);

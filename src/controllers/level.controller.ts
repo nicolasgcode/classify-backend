@@ -20,10 +20,29 @@ function sanitizeLevelInput(req: Request, res: Response, next: NextFunction) {
   });
   next();
 }
+function sanitizeSearchInput(req: Request) {
+  const queryResult: any = {
+    course: req.query.course,
+    order: req.query.order,
+  };
 
+  // Eliminar keys indefinidos y sanitizar el título
+  Object.keys(queryResult).forEach((key) => {
+    if (queryResult[key] === undefined) {
+      delete queryResult[key];
+    } else if (key === "title") {
+      queryResult[key] = { $like: `%${queryResult[key].trim()}%` }; // Sanitizar y preparar para consulta
+    }
+  });
+
+  return queryResult;
+}
 async function findAll(req: Request, res: Response) {
   try {
-    const levels = await em.find(Level, {}, { populate: ["units"] });
+    const sanitizedQuery = sanitizeSearchInput(req);
+    const levels = await em.find(Level, sanitizedQuery, {
+      populate: ["units"],
+    });
     res.json({ message: "found all levels", data: levels });
   } catch (error: any) {
     res.status(500).json({ message: "Error finding Levels" });
