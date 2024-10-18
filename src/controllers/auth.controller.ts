@@ -8,6 +8,7 @@ import { orm } from '../shared/orm.js';
 import jwt from 'jsonwebtoken';
 
 import bcrypt from 'bcrypt';
+import { UserRole } from '../utils/UserRole.js';
 
 const em = orm.em;
 
@@ -45,6 +46,7 @@ export const login = async (req: Request, res: Response) => {
       success: true,
       message: 'login success',
       token: token,
+      role: existingUser?.role,
     });
 
     console.log(existingUser);
