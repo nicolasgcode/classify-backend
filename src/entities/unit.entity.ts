@@ -17,7 +17,7 @@ export class Unit extends BaseEntity {
   name!: string;
 
   @Property({ nullable: false })
-  number!: number;
+  order!: number;
 
   @ManyToOne(() => Level)
   level!: Rel<Level>;

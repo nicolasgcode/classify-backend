@@ -1,6 +1,14 @@
-import { Entity, Property } from '@mikro-orm/core';
+import {
+  Entity,
+  Property,
+  Cascade,
+  OneToMany,
+  Rel,
+  Collection,
+} from '@mikro-orm/core';
 import { BaseEntity } from '../shared/baseEntity.entity.js';
-import { UserRole } from '../utils/UserRole.js';
+import { PurchaseRecord } from './purchaseRecord.entity.js';
+
 @Entity()
 export abstract class User extends BaseEntity {
   @Property({ unique: true })
@@ -11,11 +19,19 @@ export abstract class User extends BaseEntity {
 
   @Property({ nullable: false })
   surname!: string;
-  @Property({ nullable: true })
-  role?: UserRole;
 
   @Property({ nullable: false })
   email!: string;
+
   @Property({ nullable: false })
   password!: string;
+
+  @Property({ nullable: false, default: false })
+  admin!: boolean;
+
+  @OneToMany(() => PurchaseRecord, (purchaseRecord) => purchaseRecord.user, {
+    cascade: [Cascade.ALL],
+    nullable: true,
+  })
+  PurchaseRecord? = new Collection<PurchaseRecord>(this);
 }

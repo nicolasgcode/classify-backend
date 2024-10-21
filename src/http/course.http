@@ -1,16 +1,21 @@
 ### get all courses
 GET http://localhost:3000/api/courses
-### create new course
 
+
+
+### create new course
 # @name createCourse
 POST http://localhost:3000/api/courses
 Content-Type: application/json 
 
 {
-  "title": "title",
-  "price": "30",
+  "title": "titletesdt3",
+  "price": "302",
   "topics": [1]
 }
+
+### search by tittle
+GET http://localhost:3000/api/courses?title=tit
 
 ### ID
 @id = {{createCourse.response.body.data.id}}

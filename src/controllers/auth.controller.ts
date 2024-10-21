@@ -2,13 +2,12 @@ import { loginSchema } from '../schemas/auth.schema.js';
 import { ZodError } from 'zod';
 import { Request, Response } from 'express';
 
-import { Member } from '../entities/member.entity.js';
+import { User } from '../entities/user.entity.js';
 import { orm } from '../shared/orm.js';
 
 import jwt from 'jsonwebtoken';
 
 import bcrypt from 'bcrypt';
-import { UserRole } from '../utils/UserRole.js';
 
 const em = orm.em;
 
@@ -16,7 +15,7 @@ export const login = async (req: Request, res: Response) => {
   try {
     const user = loginSchema.parse(req.body);
     const { email, password } = user;
-    const existingUser = await em.findOne(Member, { email });
+    const existingUser = await em.findOne(User, { email });
     if (!existingUser) {
       return res.status(404).json({ message: 'Email not found' });
     }
@@ -25,6 +24,7 @@ export const login = async (req: Request, res: Response) => {
       password,
       existingUser.password
     );
+    console.log(isPasswordMatched);
     if (!isPasswordMatched) {
       return res.status(401).json({ message: 'Wrong password' });
     }
@@ -33,7 +33,7 @@ export const login = async (req: Request, res: Response) => {
       {
         id: existingUser?.id,
         email: existingUser?.email,
-        role: existingUser?.role,
+        admin: existingUser?.admin,
       },
       process.env.JWT_SECRET as string,
       {
@@ -46,7 +46,7 @@ export const login = async (req: Request, res: Response) => {
       success: true,
       message: 'login success',
       token: token,
-      role: existingUser?.role,
+      admin: existingUser?.admin,
     });
 
     console.log(existingUser);

@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
-import { Admin } from '../entities/admin.entity.js';
+import { User } from '../entities/user.entity.js';
 import { orm } from '../shared/orm.js';
+import { validateUser, validateUserToPatch } from '../schemas/user.schema.js';
 import { ZodError } from 'zod';
-import { registerSchema } from '../schemas/register.schema.js';
+
 import bcrypt from 'bcrypt';
-import { UserRole } from '../utils/UserRole.js';
 
 const em = orm.em;
-
+em.getRepository(User);
 function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     dni: req.body.dni,
@@ -15,6 +15,7 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
     surname: req.body.surname,
     email: req.body.email,
     password: req.body.password,
+    admin: req.body.admin,
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -26,8 +27,8 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const users = await em.find(Admin, {});
-    res.status(200).json({ message: 'found all admins', data: users });
+    const users = await em.find(User, {}, { populate: ['PurchaseRecord'] });
+    res.status(200).json({ message: 'found all users', users: users });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -36,42 +37,52 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const user = await em.findOneOrFail(Admin, { id });
-    res.status(200).json({ message: 'found user', data: user });
+    const user = await em.findOneOrFail(
+      User,
+      { id },
+      { populate: ['PurchaseRecord'] }
+    );
+    res.status(200).json({ message: 'found user', user: user });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
-
 async function add(req: Request, res: Response) {
   try {
-    const parsedData = registerSchema.parse(req.body.sanitizedInput);
-
-    const existingAdmin = await em.findOne(Admin, { email: parsedData.email });
-    if (existingAdmin) {
-      return res.status(409).json({ message: 'Email ya está en uso' });
+    const validUser = validateUser(req.body.sanitizedInput);
+    const emailAlreadyInUse = await em.findOne(User, {
+      email: validUser.email,
+    });
+    if (emailAlreadyInUse) {
+      return res.status(409).json({ message: 'Email already in use' });
     }
-
-    const hashedPassword = await bcrypt.hash(parsedData.password, 10);
-    const admin = em.create(Admin, {
-      ...parsedData,
-      role: UserRole.ADMIN,
+    const hashedPassword = await bcrypt.hash(validUser.password, 10);
+    const user = em.create(User, {
+      ...validUser,
       password: hashedPassword,
     });
     await em.flush();
-    res.status(201).json({ message: 'admin creado', data: admin });
+    const userCreated = em.getReference(User, user.id);
+    res.status(201).json({ message: 'user created', data: { userCreated } });
   } catch (error: any) {
     if (error instanceof ZodError) {
-      return res.status(400).json(error.issues);
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
     }
     res.status(500).json({ message: error.message });
   }
 }
+
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const userToUpdate = await em.findOneOrFail(Admin, { id });
-    em.assign(userToUpdate, req.body.sanitizedInput);
+    const user = await em.findOneOrFail(User, id);
+    const userToUpdate =
+      req.method === 'PATCH'
+        ? validateUserToPatch(req.body.sanitizedInput)
+        : validateUser(req.body.sanitizedInput);
+    em.assign(user, userToUpdate);
     await em.flush();
     res.status(200).json({ message: 'user updated', data: userToUpdate });
   } catch (error: any) {
@@ -82,7 +93,7 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const user = em.getReference(Admin, id);
+    const user = em.getReference(User, id);
     await em.removeAndFlush(user);
   } catch (error: any) {
     res.status(500).json({ message: error.message });

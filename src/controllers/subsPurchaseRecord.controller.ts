@@ -49,7 +49,7 @@ async function findAll(req: Request, res: Response) {
     const subsPurchaseRecords = await em.find(
       SubsPurchaseRecord,
       {},
-      { populate: ['subscription', 'member'] }
+      { populate: ['subscription', 'user'] }
     );
     res.json({
       message: 'found all subsPurchaseRecords',
@@ -66,7 +66,7 @@ async function findOne(req: Request, res: Response) {
     const subsPurchaseRecord = await em.findOneOrFail(
       SubsPurchaseRecord,
       { id },
-      { populate: ['subscription', 'member'] }
+      { populate: ['subscription', 'user'] }
     );
     res
       .status(200)
