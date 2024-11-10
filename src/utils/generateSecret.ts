@@ -8,7 +8,7 @@ const generateJWTSecret = () => {
 
 const saveSecretToEnv = (secret: string) => {
   appendFileSync('.env', `\nJWT_SECRET=${secret}\n`, { encoding: 'utf8' });
-  console.log('JWT_SECRET generado y agregado al archivo .env');
+  console.log('JWT_SECRET generated successfully');
 };
 
 const secret = generateJWTSecret();

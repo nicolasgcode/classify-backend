@@ -16,6 +16,7 @@ export const login = async (req: Request, res: Response) => {
     const user = loginSchema.parse(req.body);
     const { email, password } = user;
     const existingUser = await em.findOne(User, { email });
+
     if (!existingUser) {
       return res.status(404).json({ message: 'Email not found' });
     }
@@ -24,7 +25,7 @@ export const login = async (req: Request, res: Response) => {
       password,
       existingUser.password
     );
-    console.log(isPasswordMatched);
+
     if (!isPasswordMatched) {
       return res.status(401).json({ message: 'Wrong password' });
     }
@@ -56,6 +57,6 @@ export const login = async (req: Request, res: Response) => {
         .status(400)
         .json(error.issues.map((issue) => ({ message: issue.message })));
     }
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json(console.log(error));
   }
 };
