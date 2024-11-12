@@ -4,7 +4,6 @@ import { orm } from '../shared/orm.js';
 import { validateUnit, validarUnitToPatch } from '../schemas/unit.schema.js';
 import { ZodError } from 'zod';
 import { EntityManager } from '@mikro-orm/core';
-import { title } from 'process';
 
 const em: EntityManager = orm.em.fork();
 em.getRepository(Unit);
@@ -34,7 +33,7 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const unit = await em.findOneOrFail(Unit, { id }, { populate: ['level'] });
+    const unit = await em.findOneOrFail(Unit, { id }, { populate: ['course'] });
     res.status(200).json({ message: 'found unit', data: unit });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

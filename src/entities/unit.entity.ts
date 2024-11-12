@@ -8,9 +8,8 @@ import {
   PrimaryKey,
 } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/baseEntity.entity.js';
-import { Level } from './level.entity.js';
+import { Course } from './course.entity.js';
 import { File } from './file.entity.js';
-import { nullable } from 'zod';
 
 @Entity()
 export class Unit extends BaseEntity {
@@ -23,8 +22,8 @@ export class Unit extends BaseEntity {
   @Property({ nullable: false })
   content!: string;
 
-  @ManyToOne(() => Level, { nullable: true })
-  level?: Rel<Level>;
+  @ManyToOne(() => Course, { nullable: false })
+  course!: Rel<Course>;
 
   @OneToMany(() => File, (file) => file.unit)
   files = new Collection<File>(this);

@@ -6,9 +6,7 @@ const courseSchema = z.object({
   topics: z
     .array(z.number().int().positive())
     .min(1, 'At least one topic is required'),
-  levelIds: z
-    .array(z.number().int().positive())
-    .min(1, 'At least one level is required'),
+  level: z.string().min(1, 'Level is required'),
 });
 
 const courseToPatchSchema = z.object({

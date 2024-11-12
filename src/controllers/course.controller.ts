@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { Course } from './../entities/course.entity.js';
-import { Level } from './../entities/level.entity.js';
 import { Unit } from './../entities/unit.entity.js';
 import { orm } from './../shared/orm.js';
 import {
@@ -17,8 +16,8 @@ function sanitizeCourseInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     title: req.body.title,
     price: Number(req.body.price),
+    level: req.body.level,
     topics: req.body.topics,
-    levelIds: req.body.levelIds,
   };
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
@@ -52,7 +51,7 @@ async function findAll(req: Request, res: Response) {
     const courses = await em.find(
       Course,
       sanitizedQuery, // Pasa sanitizedQuery directamente
-      { populate: ['topics', 'levels', 'levels.units'] }
+      { populate: ['topics', 'units'] }
     );
 
     res.status(200).json({ message: 'Found all courses', courses: courses });
@@ -67,7 +66,7 @@ async function findOne(req: Request, res: Response) {
     const course = await em.findOneOrFail(
       Course,
       { id },
-      { populate: ['topics', 'levels'] }
+      { populate: ['topics', 'units'] }
     );
     res.status(200).json({ message: 'found course', course: course });
   } catch (error: any) {
@@ -77,45 +76,16 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    // Validación de datos del curso (título, precio, tópicos)
     const validCourse = validateCourse(req.body.sanitizedInput);
 
-    // Obtener los niveles del cuerpo de la solicitud
-    const { levelIds } = req.body;
-
-    // Validar que los niveles sean proporcionados y sean un array
-    if (!Array.isArray(levelIds) || levelIds.length === 0) {
-      return res
-        .status(400)
-        .json({ message: 'You must provide an array of level IDs.' });
-    }
-
-    // Verificar que los niveles proporcionados existen en la base de datos
-    const levels = await em.find(Level, { id: { $in: levelIds } });
-
-    if (levels.length !== levelIds.length) {
-      return res
-        .status(404)
-        .json({ message: 'Some of the provided level IDs are invalid.' });
-    }
-
-    // Crear el curso
     const course = em.create(Course, {
       ...validCourse,
       createdAt: new Date(),
       isActive: true,
     });
 
-    // Persistir el curso
     await em.persistAndFlush(course);
 
-    // Asociar los niveles al curso
-    course.levels.add(levels); // Asociamos los niveles validados
-
-    // Persistir los cambios en la relación
-    await em.flush();
-
-    // Obtener la referencia al curso creado
     const courseCreated = em.getReference(Course, course.id);
 
     res.status(201).json({
@@ -169,32 +139,22 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-async function addUnitToLevel(req: Request, res: Response) {
-  const { id, levelId } = req.params; // El id del curso y del nivel
+async function addUnitToCourse(req: Request, res: Response) {
+  const { courseId } = req.params;
   const { title, description, content } = req.body; // Datos de la unidad a agregar
 
   try {
     // Buscar el curso y el nivel
-    const course = await em.findOneOrFail(
-      Course,
-      { id: Number(id) },
-      { populate: ['levels'] }
-    ); // Buscar el curso y sus niveles});
-    const level = await em.findOneOrFail(Level, { id: Number(levelId) });
+    const course = await em.findOneOrFail(Course, { id: Number(courseId) }); // Buscar el curso y sus niveles});
 
     // Verificar que el nivel esté asociado al curso
-    if (!course.levels.contains(level)) {
-      return res
-        .status(400)
-        .json({ message: 'Level is not associated with the course' });
-    }
 
     // Crear la unidad
     const newUnit = em.create(Unit, {
       title,
       description,
       content,
-      level, // Asociamos la unidad al nivel
+      course, // Asociamos la unidad al curso
     });
 
     // Persistir la unidad
@@ -206,6 +166,34 @@ async function addUnitToLevel(req: Request, res: Response) {
   }
 }
 
+const getUnitsByCourse = async (req: Request, res: Response) => {
+  const { courseId } = req.params; // Obtén el ID del curso de la URL
+
+  try {
+    // Encuentra el curso por ID
+    const course = await em.findOneOrFail(Course, { id: Number(courseId) });
+
+    // Recupera las unidades asociadas al curso
+    const units = await em.find(Unit, { course: course }); // Asumiendo que `Unit` tiene una relación con `Course`
+
+    // Si no hay unidades, devuelve un mensaje
+    if (units.length === 0) {
+      return res
+        .status(404)
+        .json({ message: 'No units found for this course' });
+    }
+
+    // Si se encuentran unidades, devuelvelas en la respuesta
+    return res.status(200).json({ data: units });
+  } catch (error) {
+    // Manejo de errores
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: 'Error fetching units: ' + (error as Error).message });
+  }
+};
+
 export {
   findAll,
   findOne,
@@ -213,5 +201,6 @@ export {
   update,
   remove,
   sanitizeCourseInput,
-  addUnitToLevel,
+  addUnitToCourse,
+  getUnitsByCourse,
 };

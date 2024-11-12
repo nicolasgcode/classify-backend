@@ -12,7 +12,6 @@ import { userRouter } from './routes/user.routes.js';
 import authRoutes from './routes/auth.routes.js';
 
 import cors from 'cors';
-import { levelRouter } from './routes/level.routes.js';
 import { fileRouter } from './routes/file.routes.js';
 import { unitRouter } from './routes/unit.routes.js';
 
@@ -45,7 +44,6 @@ app.use(authRoutes);
 app.use('/api/subsPurchaseRecords', subsPurchaseRecordRouter);
 
 app.use('/api/users', userRouter);
-app.use('/api/levels', levelRouter);
 app.use('/api/files', fileRouter);
 app.use('/api/units', unitRouter);
 

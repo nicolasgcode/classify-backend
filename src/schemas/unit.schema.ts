@@ -13,7 +13,9 @@ export const unitSchema = z.object({
   content: z
     .string()
     .min(1, 'Content is required') // El contenido es obligatorio
-    .max(10000, 'Content must not exceed 10000 characters'), // El contenido no puede exceder 10000 caracteres
+    .max(10000, 'Content must not exceed 10000 characters'),
+
+  course: z.number().int().positive(), // El nivel es obligatorio y debe ser un número entero positivo
 });
 export function validateUnit(object: any) {
   try {
@@ -33,8 +35,7 @@ export const unitToPatch = z.object({
       'Name can only contain letters, numbers, spaces, and certain symbols (.,-)'
     )
     .optional(),
-  order: z.number().optional(),
-  level: z.number().optional(),
+  course: z.number().positive().int(),
 });
 
 export function validarUnitToPatch(object: any) {

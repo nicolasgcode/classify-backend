@@ -6,7 +6,8 @@ import {
   add,
   update,
   remove,
-  addUnitToLevel,
+  addUnitToCourse,
+  getUnitsByCourse,
 } from '../controllers/course.controller.js';
 
 import { requireAuth } from '../middlewares/requireAuth.js';
@@ -18,4 +19,5 @@ courseRouter.get('/:id', findOne);
 courseRouter.post('/', sanitizeCourseInput, add);
 courseRouter.put('/:id', sanitizeCourseInput, update);
 courseRouter.delete('/:id', requireAuth, remove);
-courseRouter.patch('/:id/levels/:levelId/units', addUnitToLevel);
+courseRouter.post('/:courseId/units', addUnitToCourse);
+courseRouter.get('/:courseId/units', getUnitsByCourse);
