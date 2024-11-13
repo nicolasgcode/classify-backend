@@ -7,8 +7,7 @@
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
     "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node dist/app.js && node dist/utils/generateSecret.js\"",
-    "secret": "node dist/utils/generateSecret.js",
-    "seeder": "node dist/utils/levelSeeder.js"
+    "secret": "node dist/utils/generateSecret.js"
   },
   "keywords": [],
   "author": "",
