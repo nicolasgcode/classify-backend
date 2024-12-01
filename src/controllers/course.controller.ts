@@ -158,6 +158,10 @@ async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const course = em.getReference(Course, id);
+    const units = await em.find(Unit, { course });
+    if (units.length > 0) {
+      await em.removeAndFlush(units);
+    }
     const purchaseRecordCount = await em.count(CoursePurchaseRecord, {
       course,
     });

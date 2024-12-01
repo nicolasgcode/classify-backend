@@ -51,6 +51,7 @@ export const login = async (req: Request, res: Response) => {
     });
 
     console.log(existingUser);
+    console.log(token);
   } catch (error) {
     if (error instanceof ZodError) {
       return res
