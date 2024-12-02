@@ -1,13 +1,9 @@
-import { Request, Response, NextFunction } from "express";
-import { CoursePurchaseRecord } from "../entities/coursePurchaseRecord.entity.js";
-import { Course } from "../entities/course.entity.js";
-import { orm } from "../shared/orm.js";
-import {
-  validateCoursePurchaseRecord,
-  validateCoursePurchaseRecordToPatch,
-} from "../schemas/coursePurchase.schema.js";
-import { getErrorMap, ZodError } from "zod";
-import { getRandomValues } from "crypto";
+import { Request, Response, NextFunction } from 'express';
+import { CoursePurchaseRecord } from '../entities/coursePurchaseRecord.entity.js';
+import { Course } from '../entities/course.entity.js';
+import { orm } from '../shared/orm.js';
+import { validateCoursePurchaseRecord } from '../schemas/coursePurchase.schema.js';
+import { ZodError } from 'zod';
 
 const em = orm.em;
 em.getRepository(CoursePurchaseRecord);
@@ -31,14 +27,14 @@ function SanitizedInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    res.json({ message: "found all coursePurchaseRecords" });
+    res.json({ message: 'found all coursePurchaseRecords' });
     const coursePurchaseRecords = await em.find(
       CoursePurchaseRecord,
       {},
-      { populate: ["course", "user"] }
+      { populate: ['course', 'user'] }
     );
     res.json({
-      message: "found all coursePurchaseRecords",
+      message: 'found all coursePurchaseRecords',
       data: coursePurchaseRecords,
     });
   } catch (error: any) {
@@ -52,10 +48,10 @@ async function findOne(req: Request, res: Response) {
     const coursePurchaseRecord = await em.findOneOrFail(
       CoursePurchaseRecord,
       { id },
-      { populate: ["course", "user"] }
+      { populate: ['course', 'user'] }
     );
     res.status(200).json({
-      message: "found coursePurchaseRecord",
+      message: 'found coursePurchaseRecord',
       data: coursePurchaseRecord,
     });
   } catch (error: any) {
@@ -75,7 +71,7 @@ async function add(req: Request, res: Response) {
     });
     await em.flush();
     res.status(201).json({
-      message: "Course purchase record created",
+      message: 'Course purchase record created',
       data: coursePurchaseRecord,
     });
   } catch (error: any) {
@@ -88,42 +84,5 @@ async function add(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
-//El update y el remove no serian necesarios
-/* 
-async function update(req: Request, res: Response) {
-  try {
-    const id = Number.parseInt(req.params.id);
-    const coursePurchaseRecord = em.getReference(CoursePurchaseRecord, id);
-    const validCoursePurchaseRecord =
-      req.method === "PATCH"
-        ? validateCoursePurchaseRecordToPatch(req.body.sanitizedInput)
-        : validateCoursePurchaseRecord(req.body.sanitizedInput);
-    if (coursePurchaseRecord.course) {
-      const course = em.getReference(Course, coursePurchaseRecord.course.id);
-      coursePurchaseRecord.totalAmount = course.price;
-    }
-    em.assign(coursePurchaseRecord, validCoursePurchaseRecord);
-    await em.flush();
-    res.status(200).json({
-      message: "CoursePurchaseRecord updated",
-      data: validCoursePurchaseRecord,
-    });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-}
 
-async function remove(req: Request, res: Response) {
-  try {
-    const id = Number.parseInt(req.params.id);
-    const coursePurchaseRecord = em.getReference(CoursePurchaseRecord, id);
-    await em.removeAndFlush(coursePurchaseRecord);
-    res.status(204).json({ message: "CoursePurchaseRecord deleted" });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-  //res.status(500).json({ message: 'Not implemented' });
-}
- */
-//export { update, remove };
 export { findAll, findOne, add, SanitizedInput };

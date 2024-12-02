@@ -1,11 +1,16 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 const userSchema = z.object({
-  dni: z.number().int().positive(),
-  name: z.string().min(1, "Name is required"),
-  surname: z.string().min(1, "Surname is required"),
-  email: z.string().email("Invalid email"),
-  password: z.string().min(8, "Password must be at least 8 characters long"),
+  dni: z
+    .number()
+    .int()
+    .positive()
+    .min(10000000, 'DNI must be an 8-digit number')
+    .max(99999999, 'DNI must be an 8-digit number'),
+  name: z.string().min(1, 'Name is required'),
+  surname: z.string().min(1, 'Surname is required'),
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Password must be at least 8 characters long'),
   admin: z.boolean().default(false),
 });
 
@@ -14,9 +19,7 @@ const userToPatchSchema = z.object({
   name: z.string().optional(),
   surname: z.string().optional(),
   email: z.string().optional(),
-  password: z
-    .string()
-    .optional(),
+  password: z.string().optional(),
   admin: z.boolean().default(false).optional(),
 });
 

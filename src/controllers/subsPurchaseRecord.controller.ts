@@ -49,7 +49,7 @@ async function findAll(req: Request, res: Response) {
     const subsPurchaseRecords = await em.find(
       SubsPurchaseRecord,
       {},
-      { populate: ['subscription', 'member'] }
+      { populate: ['subscription', 'user'] }
     );
     res.json({
       message: 'found all subsPurchaseRecords',
@@ -66,7 +66,7 @@ async function findOne(req: Request, res: Response) {
     const subsPurchaseRecord = await em.findOneOrFail(
       SubsPurchaseRecord,
       { id },
-      { populate: ['subscription', 'member'] }
+      { populate: ['subscription', 'user'] }
     );
     res
       .status(200)
@@ -103,7 +103,6 @@ async function remove(req: Request, res: Response) {
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
-  //res.status(500).json({ message: 'Not implemented' });
 }
 
 export { findAll, findOne, add, update, remove, sanitizedInput };

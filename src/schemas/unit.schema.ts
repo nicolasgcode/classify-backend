@@ -1,15 +1,21 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const unitSchema = z.object({
-  name: z
+  title: z
     .string()
-    .min(1, "Name is required")
-    .max(100, "Name must not exceed 100 characters")
-    .regex(
-      /^[A-Za-z0-9\s.,-]+$/,
-      "Name can only contain letters, numbers, spaces, and certain symbols (.,-)"
-    ),
-  level: z.number().min(1, "Level is required"),
+    .min(1, 'Title is required')
+    .max(100, 'Title must not exceed 100 characters'),
+  description: z
+    .string()
+    .min(1, 'Description is required')
+    .max(500, 'Description must not exceed 500 characters'),
+
+  content: z
+    .string()
+    .min(1, 'Content is required')
+    .max(10000, 'Content must not exceed 10000 characters'),
+
+  course: z.number().int().positive(),
 });
 export function validateUnit(object: any) {
   try {
@@ -22,15 +28,14 @@ export function validateUnit(object: any) {
 export const unitToPatch = z.object({
   name: z
     .string()
-    .min(1, "Name is required")
-    .max(100, "Name must not exceed 100 characters")
+    .min(1, 'Name is required')
+    .max(100, 'Name must not exceed 100 characters')
     .regex(
       /^[A-Za-z0-9\s.,-]+$/,
-      "Name can only contain letters, numbers, spaces, and certain symbols (.,-)"
+      'Name can only contain letters, numbers, spaces, and certain symbols (.,-)'
     )
     .optional(),
-  order: z.number().optional(),
-  level: z.number().optional(),
+  course: z.number().positive().int(),
 });
 
 export function validarUnitToPatch(object: any) {

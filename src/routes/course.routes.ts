@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from 'express';
 import {
   sanitizeCourseInput,
   findAll,
@@ -6,13 +6,19 @@ import {
   add,
   update,
   remove,
-} from "./../controllers/course.controller.js";
+  addUnitToCourse,
+  getUnitsByCourse,
+} from '../controllers/course.controller.js';
+
+import { requireAuth } from '../middlewares/requireAuth.js';
 
 export const courseRouter = Router();
 
-courseRouter.get("/", findAll);
-courseRouter.get("/:id", findOne);
-courseRouter.post("/", sanitizeCourseInput, add);
-courseRouter.patch("/:id", sanitizeCourseInput, update);
-courseRouter.put("/:id", sanitizeCourseInput, update);
-courseRouter.delete("/:id", remove);
+courseRouter.get('/', findAll);
+courseRouter.get('/:id', findOne);
+courseRouter.post('/', sanitizeCourseInput, add);
+courseRouter.put('/:id', sanitizeCourseInput, update);
+courseRouter.patch('/:id', sanitizeCourseInput, update);
+courseRouter.delete('/:id', requireAuth, remove);
+courseRouter.post('/:courseId/units', addUnitToCourse);
+courseRouter.get('/:courseId/units', getUnitsByCourse);

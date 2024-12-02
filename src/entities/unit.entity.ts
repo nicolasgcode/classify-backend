@@ -5,22 +5,24 @@ import {
   Property,
   Collection,
   Rel,
-  PrimaryKey,
 } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/baseEntity.entity.js';
-import { Level } from './level.entity.js';
+import { Course } from './course.entity.js';
 import { File } from './file.entity.js';
 
 @Entity()
 export class Unit extends BaseEntity {
   @Property({ nullable: false })
-  name!: string;
+  title!: string;
 
   @Property({ nullable: false })
-  order!: number;
+  description!: string;
 
-  @ManyToOne(() => Level)
-  level!: Rel<Level>;
+  @Property({ nullable: false })
+  content!: string;
+
+  @ManyToOne(() => Course, { nullable: false })
+  course!: Rel<Course>;
 
   @OneToMany(() => File, (file) => file.unit)
   files = new Collection<File>(this);

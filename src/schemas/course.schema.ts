@@ -1,9 +1,12 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 const courseSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  price: z.number().min(1, "Price is required"),
-  topics: z.array(z.number().int().positive()).min(1, "At least one topic is required"),
+  title: z.string().min(1, 'Title is required'),
+  price: z.number().min(1, 'Price is required'),
+  topics: z
+    .array(z.number().int().positive())
+    .min(1, 'At least one topic is required'),
+  level: z.string().min(1, 'Level is required'),
 });
 
 const courseToPatchSchema = z.object({
@@ -13,7 +16,7 @@ const courseToPatchSchema = z.object({
 });
 
 const searchByTitleSchema = z.object({
-  title: z.string().nonempty("Title is required"),
+  title: z.string().min(1, 'Title is required'),
 });
 
 function validateCourse(object: any) {
@@ -39,4 +42,5 @@ function validateSearchByTitle(object: any) {
     throw error;
   }
 }
+
 export { validateCourse, validateCourseToPatch, validateSearchByTitle };

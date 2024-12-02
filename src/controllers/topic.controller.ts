@@ -5,6 +5,7 @@ import { topicSchema } from '../schemas/topic.schema.js';
 import { ZodError } from 'zod';
 
 const em = orm.em;
+
 em.getRepository(Topic);
 
 function sanitizedInput(req: Request, res: Response, next: NextFunction) {
@@ -78,14 +79,3 @@ async function remove(req: Request, res: Response) {
 }
 
 export { sanitizedInput, findAll, findOne, add, update, remove };
-
-// Make sure the file extension is correct and the file exists in the same directory
-
-// import {
-//   sanitizeTopicInput,
-//   findAll,
-//   findOne,
-//   add,
-//   update,
-//   remove,
-// } from './topic.service.ts';

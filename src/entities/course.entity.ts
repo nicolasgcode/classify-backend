@@ -6,29 +6,28 @@ import {
   Collection,
   DateTimeType,
   ManyToMany,
-  Rel,
-  ManyToOne,
-} from "@mikro-orm/core";
-import { BaseEntity } from "../shared/baseEntity.entity.js";
-import { CoursePurchaseRecord } from "./coursePurchaseRecord.entity.js";
-import { Topic } from "./topic.entity.js";
-import { Level } from "./level.entity.js";
+} from '@mikro-orm/core';
+import { BaseEntity } from '../shared/baseEntity.entity.js';
+import { CoursePurchaseRecord } from './coursePurchaseRecord.entity.js';
+import { Topic } from './topic.entity.js';
+import { Unit } from './unit.entity.js';
+
 @Entity()
 export class Course extends BaseEntity {
   @Property({ nullable: false })
   isActive!: boolean;
-  
+
   @Property({ nullable: false, unique: true })
   title!: string;
-  /* 
-    @Property({nullable: false, unique: true})
-    description!: string
- */
+
   @Property({ type: DateTimeType, nullable: false })
   createdAt = new Date();
 
   @Property({ nullable: false })
   price!: number;
+
+  @Property({ nullable: false })
+  level!: string;
 
   @OneToMany(
     () => CoursePurchaseRecord,
@@ -46,9 +45,9 @@ export class Course extends BaseEntity {
   })
   topics = new Collection<Topic>(this);
 
-  @OneToMany(() => Level, (level) => level.course, {
+  @OneToMany(() => Unit, (unit) => unit.course, {
     cascade: [Cascade.ALL],
     nullable: true,
   })
-  levels? = new Collection<Level>(this);
+  units? = new Collection<Unit>(this);
 }
