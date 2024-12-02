@@ -3,7 +3,6 @@ import {
   Property,
   Cascade,
   OneToMany,
-  Rel,
   Collection,
 } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/baseEntity.entity.js';

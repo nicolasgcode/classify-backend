@@ -1,14 +1,6 @@
-import {
-  Cascade,
-  Entity,
-  OneToMany,
-  Property,
-  DateTimeType,
-  ManyToOne,
-  Rel,
-} from "@mikro-orm/core";
-import { Subscription } from "./subscription.entity.js";
-import { PurchaseRecord } from "./purchaseRecord.entity.js";
+import { Entity, ManyToOne, Rel } from '@mikro-orm/core';
+import { Subscription } from './subscription.entity.js';
+import { PurchaseRecord } from './purchaseRecord.entity.js';
 
 @Entity()
 export class SubsPurchaseRecord extends PurchaseRecord {

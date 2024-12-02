@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-
 import jwt from 'jsonwebtoken';
 
 export const requireAuth = (
@@ -14,7 +13,6 @@ export const requireAuth = (
   if (!authHeader) return res.status(401).json({ message: 'Unauthorized' });
 
   const token = authHeader.split(' ')[1];
-  console.log(token);
 
   if (!token) return res.status(401).json({ message: 'Unauthorized' });
 

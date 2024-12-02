@@ -39,6 +39,7 @@ async function findOne(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
+
 async function add(req: Request, res: Response) {
   try {
     const validUnit = validateUnit(req.body.sanitizedInput);
@@ -55,6 +56,7 @@ async function add(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
+
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);

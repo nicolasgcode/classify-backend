@@ -5,7 +5,6 @@ import {
   Property,
   Collection,
   Rel,
-  PrimaryKey,
 } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/baseEntity.entity.js';
 import { Course } from './course.entity.js';

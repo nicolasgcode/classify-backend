@@ -3,7 +3,6 @@ import { User } from '../entities/user.entity.js';
 import { orm } from '../shared/orm.js';
 import { validateUser, validateUserToPatch } from '../schemas/user.schema.js';
 import { ZodError } from 'zod';
-
 import bcrypt from 'bcrypt';
 
 const em = orm.em;

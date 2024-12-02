@@ -3,19 +3,19 @@ import { z } from 'zod';
 export const unitSchema = z.object({
   title: z
     .string()
-    .min(1, 'Title is required') // El título es obligatorio
-    .max(100, 'Title must not exceed 100 characters'), // El título no puede exceder 100 caracteres // Regex para permitir solo caracteres alfanuméricos y algunos símbolos
+    .min(1, 'Title is required')
+    .max(100, 'Title must not exceed 100 characters'),
   description: z
     .string()
-    .min(1, 'Description is required') // La descripción es obligatoria
-    .max(500, 'Description must not exceed 500 characters'), // La descripción no puede exceder 500 caracteres
+    .min(1, 'Description is required')
+    .max(500, 'Description must not exceed 500 characters'),
 
   content: z
     .string()
-    .min(1, 'Content is required') // El contenido es obligatorio
+    .min(1, 'Content is required')
     .max(10000, 'Content must not exceed 10000 characters'),
 
-  course: z.number().int().positive(), // El nivel es obligatorio y debe ser un número entero positivo
+  course: z.number().int().positive(),
 });
 export function validateUnit(object: any) {
   try {

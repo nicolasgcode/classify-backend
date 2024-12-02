@@ -103,7 +103,6 @@ async function remove(req: Request, res: Response) {
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
-  //res.status(500).json({ message: 'Not implemented' });
 }
 
 export { findAll, findOne, add, update, remove, sanitizedInput };

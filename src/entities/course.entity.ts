@@ -6,8 +6,6 @@ import {
   Collection,
   DateTimeType,
   ManyToMany,
-  Rel,
-  ManyToOne,
 } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/baseEntity.entity.js';
 import { CoursePurchaseRecord } from './coursePurchaseRecord.entity.js';

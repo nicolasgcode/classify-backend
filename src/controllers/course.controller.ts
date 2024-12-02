@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { Course } from './../entities/course.entity.js';
 import { Unit } from './../entities/unit.entity.js';
 import { Topic } from './../entities/topic.entity.js';
-
 import { orm } from './../shared/orm.js';
 import {
   validateCourse,
@@ -34,15 +33,13 @@ function sanitizeSearchInput(req: Request) {
     title: req.query.title,
   };
 
-  // Eliminar keys indefinidos y sanitizar el título
   Object.keys(queryResult).forEach((key) => {
     if (queryResult[key] === undefined) {
       delete queryResult[key];
     } else if (key === 'title') {
-      queryResult[key] = { $like: `%${queryResult[key].trim()}%` }; // Sanitizar y preparar para consulta
+      queryResult[key] = { $like: `%${queryResult[key].trim()}%` };
     }
   });
-
   return queryResult;
 }
 
@@ -50,11 +47,9 @@ async function findAll(req: Request, res: Response) {
   try {
     const sanitizedQuery = sanitizeSearchInput(req);
 
-    const courses = await em.find(
-      Course,
-      sanitizedQuery, // Pasa sanitizedQuery directamente
-      { populate: ['topics', 'units'] }
-    );
+    const courses = await em.find(Course, sanitizedQuery, {
+      populate: ['topics', 'units'],
+    });
 
     res.status(200).json({ message: 'Found all courses', courses: courses });
   } catch (error: any) {
@@ -106,30 +101,24 @@ async function add(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    // Obtener el ID del curso desde los parámetros de la solicitud
     const id = Number.parseInt(req.params.id);
 
-    // Obtener la referencia del curso
     const course = await em.findOne(Course, { id });
 
-    // Si no se encuentra el curso, devolver error
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
     }
 
-    // Validar la entrada del curso
     const courseUpdated =
       req.method === 'PATCH'
         ? validateCourseToPatch(req.body.sanitizedInput)
         : validateCourse(req.body.sanitizedInput);
 
-    // Si se proporcionan topics, buscamos las entidades correspondientes
     if (courseUpdated.topics && courseUpdated.topics.length > 0) {
       const topicsEntities = await em.find(Topic, {
         id: { $in: courseUpdated.topics },
       });
 
-      // Si no se encuentran los temas, devolver un error
       if (topicsEntities.length !== courseUpdated.topics.length) {
         return res.status(400).json({
           message: 'Some topics could not be found in the database',
@@ -139,16 +128,12 @@ async function update(req: Request, res: Response) {
       course.topics.add(topicsEntities);
     }
 
-    // Asignar los datos actualizados al curso
     em.assign(course, courseUpdated);
 
-    // Guardar los cambios en la base de datos
     await em.flush();
 
-    // Responder con el curso actualizado
     res.status(200).json({ message: 'Course updated', data: course });
   } catch (error: any) {
-    // En caso de error, devolver el mensaje de error
     const errorMessage = (error as any).message || 'Internal server error';
     res.status(500).json({ message: errorMessage });
   }
@@ -180,13 +165,11 @@ async function remove(req: Request, res: Response) {
 
 async function addUnitToCourse(req: Request, res: Response) {
   const { courseId } = req.params;
-  const { title, description, content } = req.body; // Datos de la unidad a agregar
+  const { title, description, content } = req.body;
 
   try {
     // Buscar el curso y el nivel
-    const course = await em.findOneOrFail(Course, { id: Number(courseId) }); // Buscar el curso y sus niveles});
-
-    // Verificar que el nivel esté asociado al curso
+    const course = await em.findOneOrFail(Course, { id: Number(courseId) });
 
     // Crear la unidad
     const newUnit = em.create(Unit, {

@@ -16,7 +16,7 @@ const courseToPatchSchema = z.object({
 });
 
 const searchByTitleSchema = z.object({
-  title: z.string().nonempty('Title is required'),
+  title: z.string().min(1, 'Title is required'),
 });
 
 function validateCourse(object: any) {
@@ -42,4 +42,5 @@ function validateSearchByTitle(object: any) {
     throw error;
   }
 }
+
 export { validateCourse, validateCourseToPatch, validateSearchByTitle };

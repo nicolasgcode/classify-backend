@@ -1,12 +1,9 @@
 import { loginSchema } from '../schemas/auth.schema.js';
 import { ZodError } from 'zod';
 import { Request, Response } from 'express';
-
 import { User } from '../entities/user.entity.js';
 import { orm } from '../shared/orm.js';
-
 import jwt from 'jsonwebtoken';
-
 import bcrypt from 'bcrypt';
 
 const em = orm.em;
