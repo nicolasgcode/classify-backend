@@ -13,6 +13,7 @@ import { userRouter } from './routes/user.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import { fileRouter } from './routes/file.routes.js';
 import { unitRouter } from './routes/unit.routes.js';
+import { checkoutRouter } from './routes/checkout.routes.js';
 
 dotenv.config();
 
@@ -24,7 +25,7 @@ const PORT = process.env.PORT;
 
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: `${process.env.CLIENT_URL}`,
     credentials: true,
   })
 );
@@ -49,6 +50,7 @@ app.use('/api/units', unitRouter);
 app.use('/api/courses', courseRouter);
 app.use('/api/coursesPurchaseRecords', coursePurchaseRecordRouter);
 app.use('/api/topics', topicRouter);
+app.use('/api/checkout', checkoutRouter);
 
 app.use((_, res) => {
   res.status(404).send({ message: 'Resource not found' });
@@ -58,5 +60,5 @@ await syncSchema();
 
 //Server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on ${process.env.SERVER_URL}`);
 });
