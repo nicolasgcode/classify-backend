@@ -29,13 +29,9 @@ export class Course extends BaseEntity {
   @Property({ nullable: false })
   level!: string;
 
-  @OneToMany(
+  @ManyToMany(
     () => CoursePurchaseRecord,
-    (coursePurchaseRecord) => coursePurchaseRecord.course,
-    {
-      cascade: [Cascade.ALL],
-      nullable: true,
-    }
+    (coursePurchaseRecord) => coursePurchaseRecord.courses
   )
   coursePurchaseRecords? = new Collection<CoursePurchaseRecord>(this);
 

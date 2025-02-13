@@ -1,9 +1,14 @@
-import { Entity, ManyToOne, Rel } from '@mikro-orm/core';
-import { Course } from './course.entity.js';
 import { PurchaseRecord } from './purchaseRecord.entity.js';
+
+import { Course } from './course.entity.js';
+
+import { Cascade, Collection, Entity, ManyToMany } from '@mikro-orm/core';
 
 @Entity()
 export class CoursePurchaseRecord extends PurchaseRecord {
-  @ManyToOne(() => Course, { nullable: false })
-  course!: Rel<Course>;
+  @ManyToMany(() => Course, (course) => course.coursePurchaseRecords, {
+    cascade: [Cascade.ALL],
+    owner: true,
+  })
+  courses = new Collection<Course>(this);
 }

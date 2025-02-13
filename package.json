@@ -6,8 +6,10 @@
   "main": "app.js",
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
+    "clean": "rm -rf dist",
     "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node dist/app.js && node dist/utils/generateSecret.js\"",
-    "secret": "node dist/utils/generateSecret.js"
+    "secret": "node dist/utils/generateSecret.js",
+    "rebuild": "npm run clean && npm run build"
   },
   "keywords": [],
   "author": "",

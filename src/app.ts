@@ -14,6 +14,7 @@ import authRoutes from './routes/auth.routes.js';
 import { fileRouter } from './routes/file.routes.js';
 import { unitRouter } from './routes/unit.routes.js';
 import { checkoutRouter } from './routes/checkout.routes.js';
+import { webhookRouter } from './routes/webhook.routes.js';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
 });
 
 // antes de las rutas y middlewares de negocio
+app.use('/api/webhook', webhookRouter);
 
 //Middlewares
 app.use(express.json());

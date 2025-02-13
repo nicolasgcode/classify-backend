@@ -44,7 +44,12 @@ export const login = async (req: Request, res: Response) => {
       success: true,
       message: 'login success',
       token: token,
-      admin: existingUser?.admin,
+      profile: {
+        id: existingUser.id,
+        email: existingUser.email,
+        admin: existingUser.admin,
+        name: existingUser.name,
+      },
     });
 
     console.log(existingUser);

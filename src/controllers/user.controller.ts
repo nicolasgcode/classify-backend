@@ -26,7 +26,11 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const users = await em.find(User, {}, { populate: ['PurchaseRecord'] });
+    const users = await em.find(
+      User,
+      {},
+      { populate: ['CoursePurchaseRecords'] }
+    );
     res.status(200).json({ message: 'found all users', users: users });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -39,7 +43,7 @@ async function findOne(req: Request, res: Response) {
     const user = await em.findOneOrFail(
       User,
       { id },
-      { populate: ['PurchaseRecord'] }
+      { populate: ['CoursePurchaseRecords'] }
     );
     res.status(200).json({ message: 'found user', user: user });
   } catch (error: any) {

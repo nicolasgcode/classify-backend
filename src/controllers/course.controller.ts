@@ -147,17 +147,8 @@ async function remove(req: Request, res: Response) {
     if (units.length > 0) {
       await em.removeAndFlush(units);
     }
-    const purchaseRecordCount = await em.count(CoursePurchaseRecord, {
-      course,
-    });
-    if (purchaseRecordCount > 0) {
-      course.isActive = false;
-      await em.flush();
-      return res.status(200).json({ message: 'Course deactivated' });
-    } else {
-      await em.removeAndFlush(course);
-      res.status(204).json({ message: 'Course deleted' });
-    }
+    await em.removeAndFlush(course);
+    res.status(204).json({ message: 'Course deleted' });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

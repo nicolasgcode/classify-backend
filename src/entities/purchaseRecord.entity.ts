@@ -1,3 +1,6 @@
+import { BaseEntity } from '../shared/baseEntity.entity.js';
+import { User } from './user.entity.js';
+
 import {
   Entity,
   Property,
@@ -5,8 +8,6 @@ import {
   ManyToOne,
   Rel,
 } from '@mikro-orm/core';
-import { BaseEntity } from '../shared/baseEntity.entity.js';
-import { User } from './user.entity.js';
 
 @Entity()
 export abstract class PurchaseRecord extends BaseEntity {
