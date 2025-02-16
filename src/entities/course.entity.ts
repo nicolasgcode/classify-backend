@@ -11,6 +11,7 @@ import { BaseEntity } from '../shared/baseEntity.entity.js';
 import { CoursePurchaseRecord } from './coursePurchaseRecord.entity.js';
 import { Topic } from './topic.entity.js';
 import { Unit } from './unit.entity.js';
+import { User } from './user.entity.js';
 
 @Entity()
 export class Course extends BaseEntity {
@@ -29,16 +30,10 @@ export class Course extends BaseEntity {
   @Property({ nullable: false })
   level!: string;
 
-  @ManyToMany(
-    () => CoursePurchaseRecord,
-    (coursePurchaseRecord) => coursePurchaseRecord.courses
-  )
-  coursePurchaseRecords? = new Collection<CoursePurchaseRecord>(this);
+  @ManyToMany(() => CoursePurchaseRecord)
+  coursePurchaseRecords = new Collection<CoursePurchaseRecord>(this);
 
-  @ManyToMany(() => Topic, (topic) => topic.courses, {
-    cascade: [Cascade.ALL],
-    owner: true,
-  })
+  @ManyToMany(() => Topic, (topic) => topic.courses)
   topics = new Collection<Topic>(this);
 
   @OneToMany(() => Unit, (unit) => unit.course, {

@@ -3,8 +3,6 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { orm, syncSchema } from './shared/orm.js';
-import { subscriptionRouter } from './routes/subscription.routes.js';
-import { subsPurchaseRecordRouter } from './routes/subsPurchaseRecord.routes.js';
 import { courseRouter } from './routes/course.routes.js';
 import { coursePurchaseRecordRouter } from './routes/coursePurchaseRecord.routes.js';
 import { topicRouter } from './routes/topic.routes.js';
@@ -41,9 +39,7 @@ app.use('/api/webhook', webhookRouter);
 //Middlewares
 app.use(express.json());
 
-app.use('/api/subscriptions', subscriptionRouter);
 app.use(authRoutes);
-app.use('/api/subsPurchaseRecords', subsPurchaseRecordRouter);
 
 app.use('/api/users', userRouter);
 app.use('/api/files', fileRouter);

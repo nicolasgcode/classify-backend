@@ -9,7 +9,6 @@ const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
 async function checkout(req: Request, res: Response) {
   try {
     const { data, userId } = req.body;
-    const purchaseData = { userId, data };
 
     const line_items = data.map((item: { name: string; price: number }) => ({
       price_data: {
