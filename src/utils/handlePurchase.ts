@@ -19,9 +19,15 @@ export async function handlePurchase({ userId, data }: PurchaseData) {
     }
 
     // Buscar los cursos que coincidan con los IDs proporcionados
-    const courses = await em.find(Course, {
-      id: { $in: data.map((item) => item.id) },
-    });
+    const courses = await em.find(
+      Course,
+      {
+        id: { $in: data.map((item) => item.id) },
+      },
+      {
+        populate: ['topics', 'units'], // Población de las relaciones
+      }
+    );
 
     // Crear un nuevo registro de compra
     const purchaseRecord = new CoursePurchaseRecord();
