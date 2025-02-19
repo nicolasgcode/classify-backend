@@ -83,11 +83,11 @@ async function add(req: Request, res: Response) {
 
     await em.persistAndFlush(course);
 
-    const courseCreated = em.getReference(Course, course.id);
+    // const course = em.getReference(Course, course.id);
 
     res.status(201).json({
       message: 'Course created successfully',
-      course: { courseCreated },
+      course: course,
     });
   } catch (error: any) {
     if (error instanceof ZodError) {

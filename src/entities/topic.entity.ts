@@ -4,7 +4,7 @@ import { Course } from './course.entity.js';
 
 @Entity()
 export class Topic extends BaseEntity {
-  @Property({ nullable: false, unique: true })
+  @Property({ nullable: false })
   description!: string;
 
   @ManyToMany(() => Course)

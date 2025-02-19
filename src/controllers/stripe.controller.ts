@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
-import { handlePurchase } from '../utils/handlePurchase.js';
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
   apiVersion: '2025-01-27.acacia',

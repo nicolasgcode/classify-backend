@@ -11,10 +11,11 @@ import {
 } from '../controllers/course.controller.js';
 
 import { requireAuth } from '../middlewares/requireAuth.js';
+import { requireAdmin } from '../middlewares/requireAdmin.js';
 
 export const courseRouter = Router();
 
-courseRouter.get('/', findAll);
+courseRouter.get('/', requireAuth, requireAdmin, findAll);
 courseRouter.get('/:id', findOne);
 courseRouter.post('/', sanitizeCourseInput, add);
 courseRouter.put('/:id', sanitizeCourseInput, update);

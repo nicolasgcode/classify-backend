@@ -1,15 +1,9 @@
 import { BaseEntity } from '../shared/baseEntity.entity.js';
 
-import {
-  Entity,
-  Property,
-  Cascade,
-  OneToMany,
-  Collection,
-  ManyToMany,
-} from '@mikro-orm/core';
-import { Course } from './course.entity.js';
+import { Entity, Property, OneToMany, Collection } from '@mikro-orm/core';
 import { CoursePurchaseRecord } from './coursePurchaseRecord.entity.js';
+import { SubsPurchaseRecord } from './subsPurchaseRecord.entity.js';
+
 
 @Entity()
 export class User extends BaseEntity {
@@ -33,7 +27,13 @@ export class User extends BaseEntity {
 
   @OneToMany(
     () => CoursePurchaseRecord,
-    (purchaseRecord) => purchaseRecord.user
+    (coursePurchaseRecord) => coursePurchaseRecord.user
   )
   coursePurchaseRecords = new Collection<CoursePurchaseRecord>(this);
+
+  @OneToMany(
+    () => SubsPurchaseRecord,
+    (subsPurchaseRecord) => subsPurchaseRecord.user
+  )
+  subsPurchaseRecords = new Collection<SubsPurchaseRecord>(this);
 }

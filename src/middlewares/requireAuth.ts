@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 export const requireAuth = (
   req: Request,
@@ -17,8 +17,11 @@ export const requireAuth = (
   if (!token) return res.status(401).json({ message: 'Unauthorized' });
 
   jwt.verify(token, process.env.JWT_SECRET as string, (err, user) => {
-    if (err) return res.status(401).json({ message: err.message });
-    console.log(user);
-    next();
+    if (user && (user as JwtPayload).admin !== undefined) {
+      req.user = { admin: (user as JwtPayload).admin };
+      next();
+    } else {
+      return res.status(401).json({ message: 'No admin found in token' });
+    }
   });
 };
