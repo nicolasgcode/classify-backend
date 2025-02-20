@@ -11,14 +11,32 @@ import {
 } from '../controllers/course.controller.js';
 
 import { requireAuth } from '../middlewares/requireAuth.js';
+import { requireAdmin } from '../middlewares/requireAdmin.js';
 
 export const courseRouter = Router();
 
-courseRouter.get('/', findAll);
-courseRouter.get('/:id', findOne);
-courseRouter.post('/', sanitizeCourseInput, add);
-courseRouter.put('/:id', sanitizeCourseInput, update);
-courseRouter.patch('/:id', sanitizeCourseInput, update);
-courseRouter.delete('/:id', requireAuth, remove);
-courseRouter.post('/:courseId/units', addUnitToCourse);
-courseRouter.get('/:courseId/units', getUnitsByCourse);
+courseRouter.get('/', requireAuth, findAll);
+courseRouter.get('/:id', findOne, requireAuth);
+courseRouter.post('/', sanitizeCourseInput, requireAuth, requireAdmin, add);
+courseRouter.put(
+  '/:id',
+  sanitizeCourseInput,
+  requireAuth,
+  requireAdmin,
+  update
+);
+courseRouter.patch(
+  '/:id',
+  sanitizeCourseInput,
+  requireAuth,
+  requireAdmin,
+  update
+);
+courseRouter.delete('/:id', requireAuth, requireAuth, requireAdmin, remove);
+courseRouter.post(
+  '/:courseId/units',
+  requireAuth,
+  requireAdmin,
+  addUnitToCourse
+);
+courseRouter.get('/:courseId/units', requireAuth, getUnitsByCourse);

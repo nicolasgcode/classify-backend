@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from 'express';
 import {
   sanitizeUnitInput,
   findAll,
@@ -6,13 +6,15 @@ import {
   add,
   update,
   remove,
-} from "../controllers/unit.controller.js";
+} from '../controllers/unit.controller.js';
+import { requireAuth } from '../middlewares/requireAuth.js';
+import { requireAdmin } from '../middlewares/requireAdmin.js';
 
 export const unitRouter = Router();
 
-unitRouter.get("/", findAll);
-unitRouter.get("/:id", findOne);
-unitRouter.post("/", sanitizeUnitInput, add);
-unitRouter.put("/:id", sanitizeUnitInput, update);
-unitRouter.patch("/:id", sanitizeUnitInput, update);
-unitRouter.delete("/:id", remove);
+unitRouter.get('/', requireAuth, requireAdmin, findAll);
+unitRouter.get('/:id', requireAuth, requireAdmin, findOne);
+unitRouter.post('/', sanitizeUnitInput, requireAuth, requireAdmin, add);
+unitRouter.put('/:id', sanitizeUnitInput, requireAuth, requireAdmin, update);
+unitRouter.patch('/:id', sanitizeUnitInput, requireAuth, requireAdmin, update);
+unitRouter.delete('/:id', requireAuth, requireAdmin, remove);

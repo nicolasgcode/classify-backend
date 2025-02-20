@@ -26,8 +26,34 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const users = await em.find(User, {}, { populate: ['PurchaseRecord'] });
+    const users = await em.find(
+      User,
+      {},
+      { populate: ['coursePurchaseRecords.courses'] }
+    );
     res.status(200).json({ message: 'found all users', users: users });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function getUserCourses(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id);
+    const user = await em.findOneOrFail(User, id, {
+      populate: [
+        'coursePurchaseRecords.courses',
+        'coursePurchaseRecords.courses.topics',
+        'coursePurchaseRecords.courses.units',
+      ],
+    });
+
+    const courses = user.coursePurchaseRecords.map((record) => record.courses);
+
+    res.status(200).json({
+      message: `Found ${user.name}'s courses`,
+      courses: courses,
+    });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -36,11 +62,9 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const user = await em.findOneOrFail(
-      User,
-      { id },
-      { populate: ['PurchaseRecord'] }
-    );
+    const user = await em.findOneOrFail(User, id, {
+      populate: ['coursePurchaseRecords.courses'],
+    });
     res.status(200).json({ message: 'found user', user: user });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -94,9 +118,18 @@ async function remove(req: Request, res: Response) {
     const id = Number.parseInt(req.params.id);
     const user = em.getReference(User, id);
     await em.removeAndFlush(user);
+    res.status(204).json({ message: 'User deleted' });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
 
-export { sanitizeUserInput, findAll, findOne, add, update, remove };
+export {
+  sanitizeUserInput,
+  findAll,
+  findOne,
+  add,
+  update,
+  remove,
+  getUserCourses,
+};

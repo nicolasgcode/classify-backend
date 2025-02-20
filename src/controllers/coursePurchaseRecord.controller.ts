@@ -31,7 +31,7 @@ async function findAll(req: Request, res: Response) {
     const coursePurchaseRecords = await em.find(
       CoursePurchaseRecord,
       {},
-      { populate: ['course', 'user'] }
+      { populate: ['user'] }
     );
     res.json({
       message: 'found all coursePurchaseRecords',
@@ -48,7 +48,7 @@ async function findOne(req: Request, res: Response) {
     const coursePurchaseRecord = await em.findOneOrFail(
       CoursePurchaseRecord,
       { id },
-      { populate: ['course', 'user'] }
+      { populate: ['user'] }
     );
     res.status(200).json({
       message: 'found coursePurchaseRecord',
