@@ -7,11 +7,13 @@ import {
   update,
   remove,
 } from '../controllers/file.controller.js';
+import { requireAuth } from '../middlewares/requireAuth.js';
+import { requireAdmin } from '../middlewares/requireAdmin.js';
 
 export const fileRouter = Router();
 
-fileRouter.get('/', findAll);
-fileRouter.get('/:id', findOne);
-fileRouter.post('/', sanitizeUserInput, add);
-fileRouter.put('/:id', sanitizeUserInput, update);
-fileRouter.delete('/:id', remove);
+fileRouter.get('/', requireAuth, findAll);
+fileRouter.get('/:id', requireAuth, requireAdmin, findOne);
+fileRouter.post('/', sanitizeUserInput, requireAuth, requireAdmin, add);
+fileRouter.put('/:id', sanitizeUserInput, requireAuth, requireAdmin, update);
+fileRouter.delete('/:id', requireAuth, requireAdmin, remove);

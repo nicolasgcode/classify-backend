@@ -83,8 +83,6 @@ async function add(req: Request, res: Response) {
 
     await em.persistAndFlush(course);
 
-    // const course = em.getReference(Course, course.id);
-
     res.status(201).json({
       message: 'Course created successfully',
       course: course,
