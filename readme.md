@@ -25,7 +25,7 @@ Create a .env file by copying the example provided in the root directory of the 
 cp .env.example .env
 ```
 
-Set up Stripe Private Key:
+Set up Stripe Private Key
 
 To connect the app with Stripe, you’ll need to obtain a private API key for Stripe.
 
