@@ -46,7 +46,7 @@ npm run secret
 
 This will automatically generate the JWT_SECRET in the .env file.
 
-4. Replace any other placeholder values in the .env file with the appropriate values.
+Replace any other placeholder values in the .env file with the appropriate values.
 
 ### 4. Install Stripe CLI
 To handle Stripe events (like payments), you need to install the Stripe CLI.
