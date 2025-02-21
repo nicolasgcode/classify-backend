@@ -26,6 +26,7 @@ cp .env.example .env
 ```
 
 Set up Stripe Private Key:
+
 To connect the app with Stripe, you’ll need to obtain a private API key for Stripe.
 
 1. If you don’t have a Stripe account, [sign up here](https://dashboard.stripe.com/register) 
@@ -35,6 +36,15 @@ To connect the app with Stripe, you’ll need to obtain a private API key for St
 ```
 STRIPE_PRIVATE_KEY=your_stripe_private_key
 ```
+Generate the JWT Secret
+
+Run the following command to generate a JWT secret and store it in the .env file:
+
+```bash
+npm run secret
+```
+
+This will automatically generate the JWT_SECRET in the .env file.
 
 4. Replace any other placeholder values in the .env file with the appropriate values.
 
