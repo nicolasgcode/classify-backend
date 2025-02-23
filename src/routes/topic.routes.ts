@@ -7,11 +7,13 @@ import {
   update,
   remove,
 } from '../controllers/topic.controller.js';
+import { requireAuth } from '../middlewares/requireAuth.js';
+import { requireAdmin } from '../middlewares/requireAdmin.js';
 
 export const topicRouter = Router();
 
-topicRouter.get('/', findAll);
-topicRouter.get('/:id', findOne);
-topicRouter.post('/', sanitizedInput, add);
-topicRouter.put('/:id', sanitizedInput, update);
-topicRouter.delete('/:id', remove);
+topicRouter.get('/', requireAuth, requireAdmin, findAll);
+topicRouter.get('/:id', requireAuth, requireAdmin , findOne);
+topicRouter.post('/', sanitizedInput, requireAuth, requireAdmin, add);
+topicRouter.put('/:id', sanitizedInput, requireAuth, requireAdmin, update);
+topicRouter.delete('/:id', requireAuth, requireAdmin, remove);
