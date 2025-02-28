@@ -6,22 +6,28 @@ export const requireAuth = (
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers.authorization;
+  // Access the token from cookies
+  const token = req.cookies.auth_token;
 
-  console.log(authHeader);
-
-  if (!authHeader) return res.status(401).json({ message: 'Unauthorized' });
-
-  const token = authHeader.split(' ')[1];
-
+  // Check if token exists
   if (!token) return res.status(401).json({ message: 'Unauthorized' });
 
-  jwt.verify(token, process.env.JWT_SECRET as string, (err, user) => {
-    if (user && (user as JwtPayload).admin !== undefined) {
-      req.user = { admin: (user as JwtPayload).admin };
-      next();
-    } else {
-      return res.status(401).json({ message: 'No admin found in token' });
+  // Verify the token and ensure the 'decoded' type is JwtPayload
+  jwt.verify(
+    token,
+    process.env.JWT_SECRET as string,
+    (err: any, decoded: any) => {
+      if (err) {
+        return res.status(403).json({ message: 'Forbidden' });
+      }
+
+      // Ensure decoded has admin information
+      if (decoded && decoded.admin !== undefined) {
+        req.user = { admin: decoded.admin };
+        next();
+      } else {
+        return res.status(401).json({ message: 'No admin found in token' });
+      }
     }
-  });
+  );
 };

@@ -13,6 +13,7 @@ import { fileRouter } from './routes/file.routes.js';
 import { unitRouter } from './routes/unit.routes.js';
 import { checkoutRouter } from './routes/checkout.routes.js';
 import { webhookRouter } from './routes/webhook.routes.js';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -29,6 +30,8 @@ app.use(
   })
 );
 
+app.use(cookieParser());
+
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
 });
@@ -39,7 +42,7 @@ app.use('/api/webhook', webhookRouter);
 //Middlewares
 app.use(express.json());
 
-app.use(authRoutes);
+app.use('/api/auth', authRoutes);
 
 app.use('/api/users', userRouter);
 app.use('/api/files', fileRouter);

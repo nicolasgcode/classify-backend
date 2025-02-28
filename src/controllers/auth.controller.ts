@@ -39,11 +39,18 @@ export const login = async (req: Request, res: Response) => {
       }
     );
 
+    // Set the token in a secure cookie
+    res.cookie('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000,
+      path: '/',
+    });
+
     res.status(200).json({
       status: 200,
       success: true,
       message: 'login success',
-      token: token,
       profile: {
         id: existingUser.id,
         email: existingUser.email,
@@ -52,14 +59,26 @@ export const login = async (req: Request, res: Response) => {
       },
     });
 
+    console.log(req.cookies.auth_token);
+
     console.log(existingUser);
     console.log(token);
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof ZodError) {
       return res
         .status(400)
         .json(error.issues.map((issue) => ({ message: issue.message })));
     }
-    return res.status(500).json(console.log(error));
+    return res.status(500).json({ error: error.message });
   }
+};
+
+export const logout = async (req: Request, res: Response) => {
+  console.log('Clearing auth_token cookie');
+  res.clearCookie('auth_token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+  });
+  res.status(200).json({ message: 'logged out' });
 };
