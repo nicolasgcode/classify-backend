@@ -18,18 +18,17 @@ export async function handlePurchase({ userId, data }: PurchaseData) {
       throw new Error('User not found');
     }
 
-    // Buscar los cursos que coincidan con los IDs proporcionados
     const courses = await em.find(
       Course,
       {
         id: { $in: data.map((item) => item.id) },
       },
       {
-        populate: ['topics', 'units'], // Población de las relaciones
+        populate: ['topics', 'units'],
       }
     );
 
-    // Crear un nuevo registro de compra
+    // Create new purchase record
     const purchaseRecord = new CoursePurchaseRecord();
     purchaseRecord.user = user; // Asocia al usuario que está comprando los cursos
     purchaseRecord.purchaseAt = new Date(); // Fecha de la compra
@@ -38,9 +37,9 @@ export async function handlePurchase({ userId, data }: PurchaseData) {
       0
     );
 
-    // Añadir los cursos al registro de compra (relación ManyToMany)
+    // Añadir los cursos al registro de compra
     courses.forEach((course) => {
-      purchaseRecord.courses.add(course); // Asocia cada curso con el registro de compra
+      purchaseRecord.courses.add(course);
     });
 
     // Persistir el registro de compra y los cursos asociados

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
 
-import { handlePurchase } from '../utils/handlePurchase.js'; // Importa la función handlePurchase
+import { handlePurchase } from '../utils/handlePurchase.js';
 
 const webhookSecret = process.env.STRIPE_WH_SECRET;
 
@@ -11,7 +11,7 @@ async function stripeWebhook(req: Request, res: Response) {
   let event;
 
   try {
-    // Verifica el evento con la firma de Stripe
+    // Verify signature
     event = Stripe.webhooks.constructEvent(
       req.body,
       sig,
@@ -24,15 +24,15 @@ async function stripeWebhook(req: Request, res: Response) {
 
   switch (event.type) {
     case 'checkout.session.completed':
-      const session = event.data.object; // Esto es el objeto de la sesión de pago
+      const session = event.data.object;
 
-      const { userId, data } = session.metadata || {}; // Recuperamos los datos de la compra, defaulting to an empty object if metadata is null
+      const { userId, data } = session.metadata || {}; // Purchase data
 
-      // Ejecuta la lógica de negocio para manejar la compra
+      // Call Handle purchase
       try {
         await handlePurchase({
-          userId: Number(userId), // Asegúrate de convertir a un número si es necesario
-          data: JSON.parse(data), // Asegúrate de convertir los datos si es un JSON
+          userId: Number(userId),
+          data: JSON.parse(data),
         });
         console.log('Payment completed');
         res.status(200).json({ received: true });
@@ -42,7 +42,7 @@ async function stripeWebhook(req: Request, res: Response) {
       }
       break;
     default:
-      // Maneja otros tipos de eventos si es necesario
+      // Handle other event types
       console.log(`Unhandled event type: ${event.type}`);
       res.status(200).json({ received: true });
   }

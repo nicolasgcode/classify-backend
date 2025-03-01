@@ -39,7 +39,7 @@ export const login = async (req: Request, res: Response) => {
       }
     );
 
-    // Set the token in a secure cookie
+    // Set token in cookie
     res.cookie('auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

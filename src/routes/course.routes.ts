@@ -32,7 +32,7 @@ courseRouter.patch(
   requireAdmin,
   update
 );
-courseRouter.delete('/:id', requireAuth, requireAuth, requireAdmin, remove);
+courseRouter.delete('/:id', requireAuth, requireAdmin, remove);
 courseRouter.post(
   '/:courseId/units',
   requireAuth,
