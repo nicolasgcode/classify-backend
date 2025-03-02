@@ -29,7 +29,7 @@ async function findAll(req: Request, res: Response) {
     const users = await em.find(
       User,
       {},
-      { populate: ['coursePurchaseRecords.courses'] }
+      { populate: ['orders.orderLines.course'] }
     );
     res.status(200).json({ message: 'found all users', users: users });
   } catch (error: any) {
@@ -42,13 +42,18 @@ async function getUserCourses(req: Request, res: Response) {
     const id = Number.parseInt(req.params.id);
     const user = await em.findOneOrFail(User, id, {
       populate: [
-        'coursePurchaseRecords.courses',
-        'coursePurchaseRecords.courses.topics',
-        'coursePurchaseRecords.courses.units',
+        'orders.orderLines.course',
+        'orders.orderLines.course.title',
+        'orders.orderLines.course.topics',
+        'orders.orderLines.course.level',
       ],
     });
 
-    const courses = user.coursePurchaseRecords.map((record) => record.courses);
+    const courses = user.orders
+      .getItems()
+      .flatMap((order) =>
+        order.orderLines.getItems().map((orderLine) => orderLine.course)
+      );
 
     res.status(200).json({
       message: `Found ${user.name}'s courses`,
@@ -63,7 +68,7 @@ async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const user = await em.findOneOrFail(User, id, {
-      populate: ['coursePurchaseRecords.courses'],
+      populate: ['orders.orderLines.course'],
     });
     res.status(200).json({ message: 'found user', user: user });
   } catch (error: any) {

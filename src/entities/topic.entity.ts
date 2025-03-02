@@ -7,6 +7,6 @@ export class Topic extends BaseEntity {
   @Property({ nullable: false })
   description!: string;
 
-  @ManyToMany(() => Course)
+  @ManyToMany(() => Course, (course) => course.topics)
   courses = new Collection<Course>(this);
 }

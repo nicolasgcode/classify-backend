@@ -6,7 +6,6 @@ import {
   validateSubscriptionToPatch,
 } from '../schemas/subscription.schema.js';
 import { ZodError } from 'zod';
-import { SubsPurchaseRecord } from '../entities/subsPurchaseRecord.entity.js';
 
 const em = orm.em;
 em.getRepository(Subscription);
@@ -39,11 +38,7 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const subscription = await em.findOneOrFail(
-      Subscription,
-      { id },
-      { populate: ['subsPurchaseRecords'] }
-    );
+    const subscription = await em.findOneOrFail(Subscription, { id });
     res.status(200).json({ message: 'found subscription', data: subscription });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -94,17 +89,10 @@ async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const subscription = em.getReference(Subscription, id);
-    const purchaseRecordCount = await em.count(SubsPurchaseRecord, {
-      subscription,
-    });
-    if (purchaseRecordCount > 0) {
-      subscription.isActive = false;
-      await em.flush();
-      return res.status(200).json({ message: 'Subscription deactivated' });
-    } else {
-      await em.removeAndFlush(subscription);
-      res.status(204).json({ message: 'Subscription deleted' });
-    }
+
+    subscription.isActive = false;
+    await em.flush();
+    return res.status(200).json({ message: 'Subscription deactivated' });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

@@ -1,9 +1,13 @@
 import { BaseEntity } from '../shared/baseEntity.entity.js';
 
-import { Entity, Property, OneToMany, Collection } from '@mikro-orm/core';
-import { CoursePurchaseRecord } from './coursePurchaseRecord.entity.js';
-import { SubsPurchaseRecord } from './subsPurchaseRecord.entity.js';
-
+import {
+  Cascade,
+  Collection,
+  Entity,
+  OneToMany,
+  Property,
+} from '@mikro-orm/core';
+import { Order } from './order.entity.js';
 
 @Entity()
 export class User extends BaseEntity {
@@ -25,15 +29,8 @@ export class User extends BaseEntity {
   @Property({ nullable: false, default: false })
   admin!: boolean;
 
-  @OneToMany(
-    () => CoursePurchaseRecord,
-    (coursePurchaseRecord) => coursePurchaseRecord.user
-  )
-  coursePurchaseRecords = new Collection<CoursePurchaseRecord>(this);
-
-  @OneToMany(
-    () => SubsPurchaseRecord,
-    (subsPurchaseRecord) => subsPurchaseRecord.user
-  )
-  subsPurchaseRecords = new Collection<SubsPurchaseRecord>(this);
+  @OneToMany(() => Order, (order) => order.user, {
+    cascade: [Cascade.ALL],
+  })
+  orders = new Collection<Order>(this);
 }

@@ -8,9 +8,9 @@ import {
   ManyToMany,
 } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/baseEntity.entity.js';
-import { CoursePurchaseRecord } from './coursePurchaseRecord.entity.js';
 import { Topic } from './topic.entity.js';
 import { Unit } from './unit.entity.js';
+import { OrderLine } from './orderLine.entity.js';
 
 @Entity()
 export class Course extends BaseEntity {
@@ -29,8 +29,10 @@ export class Course extends BaseEntity {
   @Property({ nullable: false })
   level!: string;
 
-  @ManyToMany(() => CoursePurchaseRecord)
-  coursePurchaseRecords = new Collection<CoursePurchaseRecord>(this);
+  @OneToMany(() => OrderLine, (orderLine) => orderLine.course, {
+    cascade: [Cascade.ALL],
+  })
+  orderLines = new Collection<OrderLine>(this);
 
   @ManyToMany(() => Topic, (topic) => topic.courses, {
     cascade: [Cascade.ALL],

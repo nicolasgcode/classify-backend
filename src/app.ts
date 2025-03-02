@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { orm, syncSchema } from './shared/orm.js';
 import { courseRouter } from './routes/course.routes.js';
-import { coursePurchaseRecordRouter } from './routes/coursePurchaseRecord.routes.js';
 import { topicRouter } from './routes/topic.routes.js';
 import { RequestContext } from '@mikro-orm/core';
 import { userRouter } from './routes/user.routes.js';
@@ -14,6 +13,7 @@ import { unitRouter } from './routes/unit.routes.js';
 import { checkoutRouter } from './routes/checkout.routes.js';
 import { webhookRouter } from './routes/webhook.routes.js';
 import cookieParser from 'cookie-parser';
+import orderRouter from './routes/order.routes.js';
 
 dotenv.config();
 
@@ -49,7 +49,8 @@ app.use('/api/files', fileRouter);
 app.use('/api/units', unitRouter);
 
 app.use('/api/courses', courseRouter);
-app.use('/api/coursesPurchaseRecords', coursePurchaseRecordRouter);
+app.use('/api/orders', orderRouter);
+
 app.use('/api/topics', topicRouter);
 app.use('/api/checkout', checkoutRouter);
 

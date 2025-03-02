@@ -1,6 +1,5 @@
 import { Entity, ManyToMany, Property, Collection } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/baseEntity.entity.js';
-import { SubsPurchaseRecord } from './subsPurchaseRecord.entity.js';
 
 @Entity()
 export class Subscription extends BaseEntity {
@@ -15,7 +14,4 @@ export class Subscription extends BaseEntity {
 
   @Property({ nullable: false })
   price!: number;
-
-  @ManyToMany(() => SubsPurchaseRecord)
-  subsPurchaseRecords = new Collection<SubsPurchaseRecord>(this);
 }

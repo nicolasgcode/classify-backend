@@ -1,14 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { ZodError } from 'zod';
 import { Course } from './../entities/course.entity.js';
-import { Unit } from './../entities/unit.entity.js';
 import { Topic } from './../entities/topic.entity.js';
-import { orm } from './../shared/orm.js';
+import { Unit } from './../entities/unit.entity.js';
 import {
   validateCourse,
   validateCourseToPatch,
 } from './../schemas/course.schema.js';
-import { ZodError } from 'zod';
-import { CoursePurchaseRecord } from '../entities/coursePurchaseRecord.entity.js';
+import { orm } from './../shared/orm.js';
 
 const em = orm.em;
 em.getRepository(Course);
@@ -206,12 +205,12 @@ const getUnitsByCourse = async (req: Request, res: Response) => {
 };
 
 export {
+  add,
+  addUnitToCourse,
   findAll,
   findOne,
-  add,
-  update,
+  getUnitsByCourse,
   remove,
   sanitizeCourseInput,
-  addUnitToCourse,
-  getUnitsByCourse,
+  update,
 };

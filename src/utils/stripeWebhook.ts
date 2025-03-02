@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
+import { orm } from '../shared/orm.js';
+import { Order } from '../entities/order.entity.js';
 
-import { handlePurchase } from '../utils/handlePurchase.js';
+const em = orm.em;
 
 const webhookSecret = process.env.STRIPE_WH_SECRET;
 
@@ -24,22 +26,21 @@ async function stripeWebhook(req: Request, res: Response) {
 
   switch (event.type) {
     case 'checkout.session.completed':
+    case 'payment_intent.succeeded':
       const session = event.data.object;
 
-      const { userId, data } = session.metadata || {}; // Purchase data
+      const orderId = session.metadata || {};
 
-      // Call Handle purchase
-      try {
-        await handlePurchase({
-          userId: Number(userId),
-          data: JSON.parse(data),
-        });
-        console.log('Payment completed');
-        res.status(200).json({ received: true });
-      } catch (error) {
-        console.error('Error processing purchase:', error);
-        res.status(500).json({ error: 'Error processing purchase' });
-      }
+      console.log(session.metadata);
+
+      const order = await em.findOneOrFail(Order, { id: orderId });
+
+      console.log(order);
+
+      order.status = 'paid';
+
+      await em.persistAndFlush(order);
+
       break;
     default:
       // Handle other event types

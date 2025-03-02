@@ -1,13 +1,22 @@
+import 'dotenv/config';
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
-
+import { generateOrder } from '../utils/generateOrder.js';
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
   apiVersion: '2025-01-27.acacia',
 });
 
-async function checkout(req: Request, res: Response) {
+export async function checkout(req: Request, res: Response) {
   try {
     const { data, userId } = req.body;
+
+    const order = await generateOrder(data, userId, res);
+
+    if (!order) {
+      throw new Error('Error creating order');
+    }
+
+    const orderId = order.id;
 
     const line_items = data.map((item: { name: string; price: number }) => ({
       price_data: {
@@ -26,7 +35,7 @@ async function checkout(req: Request, res: Response) {
       line_items,
       success_url: `${process.env.CLIENT_URL}/success`,
       cancel_url: `${process.env.CLIENT_URL}/store`,
-      metadata: { userId, data: JSON.stringify(data) },
+      metadata: { id: orderId },
     });
 
     res.status(201).json({ url: session.url });
@@ -34,5 +43,3 @@ async function checkout(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
-
-export { checkout };
