@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const unitSchema = z.object({
+const unitSchema = z.object({
   title: z
     .string()
     .min(1, 'Title is required')
@@ -17,13 +17,6 @@ export const unitSchema = z.object({
 
   course: z.number().int().positive(),
 });
-export function validateUnit(object: any) {
-  try {
-    return unitSchema.parse(object);
-  } catch (error: any) {
-    throw error;
-  }
-}
 
 export const unitToPatch = z.object({
   name: z
@@ -35,8 +28,18 @@ export const unitToPatch = z.object({
       'Name can only contain letters, numbers, spaces, and certain symbols (.,-)'
     )
     .optional(),
-  course: z.number().positive().int(),
+
+  description: z.string().min(1, 'Description is required').optional(),
+  content: z.string().min(1, 'Content is required').optional(),
 });
+
+export function validateUnit(object: any) {
+  try {
+    return unitSchema.parse(object);
+  } catch (error: any) {
+    throw error;
+  }
+}
 
 export function validarUnitToPatch(object: any) {
   try {

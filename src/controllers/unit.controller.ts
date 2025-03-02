@@ -1,25 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { Unit } from '../entities/unit.entity.js';
 import { orm } from '../shared/orm.js';
-import { validateUnit, validarUnitToPatch } from '../schemas/unit.schema.js';
+import { validateUnit } from '../schemas/unit.schema.js';
 import { ZodError } from 'zod';
 import { EntityManager } from '@mikro-orm/core';
 
 const em: EntityManager = orm.em.fork();
 em.getRepository(Unit);
-
-function sanitizeUnitInput(req: Request, res: Response, next: NextFunction) {
-  req.body.sanitizedInput = {
-    title: req.body.title,
-    description: req.body.description,
-    content: req.body.content,
-  };
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined)
-      delete req.body.sanitizedInput[key];
-  });
-  next();
-}
 
 async function findAll(req: Request, res: Response) {
   try {
@@ -83,4 +70,4 @@ async function remove(req: Request, res: Response) {
   });
 }
 
-export { sanitizeUnitInput, findAll, findOne, add, update, remove };
+export { findAll, findOne, add, update, remove };

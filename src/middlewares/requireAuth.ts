@@ -6,10 +6,8 @@ export const requireAuth = (
   res: Response,
   next: NextFunction
 ) => {
-  // Access the token from cookies
   const token = req.cookies.auth_token;
 
-  // Check if token exists
   if (!token) return res.status(401).json({ message: 'Unauthorized' });
 
   jwt.verify(

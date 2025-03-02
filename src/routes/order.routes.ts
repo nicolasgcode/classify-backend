@@ -1,12 +1,6 @@
 import { Router } from 'express';
 
-import {
-  add,
-  remove,
-  findOne,
-  findAll,
-  update,
-} from '../controllers/order.controller.js';
+import { findAll } from '../controllers/order.controller.js';
 
 const orderRouter = Router();
 

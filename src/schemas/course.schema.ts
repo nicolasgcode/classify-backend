@@ -15,11 +15,7 @@ const courseToPatchSchema = z.object({
   topics: z.array(z.number().int().positive()).optional(),
 });
 
-const searchByTitleSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-});
-
-function validateCourse(object: any) {
+export function validateCourse(object: any) {
   try {
     return courseSchema.parse(object);
   } catch (error: any) {
@@ -27,20 +23,10 @@ function validateCourse(object: any) {
   }
 }
 
-function validateCourseToPatch(object: any) {
+export function validateCourseToPatch(object: any) {
   try {
     return courseToPatchSchema.parse(object);
   } catch (error: any) {
     throw error;
   }
 }
-
-function validateSearchByTitle(object: any) {
-  try {
-    return searchByTitleSchema.parse(object);
-  } catch (error: any) {
-    throw error;
-  }
-}
-
-export { validateCourse, validateCourseToPatch, validateSearchByTitle };

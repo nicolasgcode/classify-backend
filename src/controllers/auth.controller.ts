@@ -1,4 +1,4 @@
-import { loginSchema } from '../schemas/auth.schema.js';
+import { validateLogin } from '../schemas/auth.schema.js';
 import { ZodError } from 'zod';
 import { Request, Response } from 'express';
 import { User } from '../entities/user.entity.js';
@@ -10,7 +10,7 @@ const em = orm.em;
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const user = loginSchema.parse(req.body);
+    const user = validateLogin(req.body);
     const { email, password } = user;
     const existingUser = await em.findOne(User, { email });
 

@@ -1,13 +1,23 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 const subscriptionSchema = z.object({
   description: z
-    .string({ message: "Invalid description" })
-    .min(1, "Description is required"),
+    .string({ message: 'Invalid description' })
+    .min(1, 'Description is required'),
   duration: z
-    .number({ message: "Invalid duration" })
-    .min(1, "Duration is required"),
-  price: z.number({ message: "Invalid price" }).min(1, "Price is required"),
+    .number({ message: 'Invalid duration' })
+    .min(1, 'Duration is required'),
+  price: z.number({ message: 'Invalid price' }).min(1, 'Price is required'),
+});
+
+const subscriptionToPatch = z.object({
+  description: z
+    .string({ message: 'Invalid description' })
+    .min(1, 'Description is required'),
+  duration: z
+    .number({ message: 'Invalid duration' })
+    .min(1, 'Duration is required'),
+  price: z.number({ message: 'Invalid price' }).min(1, 'Price is required'),
 });
 
 export function validateSubscription(object: any) {
@@ -17,16 +27,6 @@ export function validateSubscription(object: any) {
     throw error;
   }
 }
-
-const subscriptionToPatch = z.object({
-  description: z
-    .string({ message: "Invalid description" })
-    .min(1, "Description is required"),
-  duration: z
-    .number({ message: "Invalid duration" })
-    .min(1, "Duration is required"),
-  price: z.number({ message: "Invalid price" }).min(1, "Price is required"),
-});
 
 export function validateSubscriptionToPatch(object: any) {
   try {

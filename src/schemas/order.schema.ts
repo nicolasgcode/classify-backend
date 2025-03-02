@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const orderSchema = z.object({
+const orderSchema = z.object({
   orderDate: z.date(),
   status: z.string().min(1),
   total: z.number().int().positive(),
@@ -14,6 +14,7 @@ export const orderSchema = z.object({
     })
   ),
 });
+
 export function validateOrder(object: any) {
   try {
     return orderSchema.parse(object);

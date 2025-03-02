@@ -1,28 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
-import { User } from '../entities/user.entity.js';
-import { orm } from '../shared/orm.js';
-import { validateUser, validateUserToPatch } from '../schemas/user.schema.js';
-import { ZodError } from 'zod';
 import bcrypt from 'bcrypt';
+import { Request, Response } from 'express';
+import { ZodError } from 'zod';
+import { User } from '../entities/user.entity.js';
+import { validateUser, validateUserToPatch } from '../schemas/user.schema.js';
+import { orm } from '../shared/orm.js';
 
 const em = orm.em;
-em.getRepository(User);
-function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
-  req.body.sanitizedInput = {
-    dni: req.body.dni,
-    name: req.body.name,
-    surname: req.body.surname,
-    email: req.body.email,
-    password: req.body.password,
-    admin: req.body.admin,
-  };
 
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined)
-      delete req.body.sanitizedInput[key];
-  });
-  next();
-}
+em.getRepository(User);
 
 async function findAll(req: Request, res: Response) {
   try {
@@ -129,12 +114,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export {
-  sanitizeUserInput,
-  findAll,
-  findOne,
-  add,
-  update,
-  remove,
-  getUserCourses,
-};
+export { add, findAll, findOne, getUserCourses, remove, update };

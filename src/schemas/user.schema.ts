@@ -23,7 +23,7 @@ const userToPatchSchema = z.object({
   admin: z.boolean().default(false).optional(),
 });
 
-function validateUser(object: any) {
+export function validateUser(object: any) {
   try {
     return userSchema.parse(object);
   } catch (error: any) {
@@ -31,12 +31,10 @@ function validateUser(object: any) {
   }
 }
 
-function validateUserToPatch(object: any) {
+export function validateUserToPatch(object: any) {
   try {
     return userToPatchSchema.parse(object);
   } catch (error: any) {
     throw error;
   }
 }
-
-export { validateUser, validateUserToPatch };
